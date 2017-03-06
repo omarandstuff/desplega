@@ -1,0 +1,23 @@
+{
+  "name": "simple-deployer",
+  "version": "0.0.1",
+  "description": "SHH command sender that can be use to doa simple deploy.",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/omarandstuff/simple-deployer.git"
+  },
+  "keywords": [
+    "simple",
+    "deployer"
+  ],
+  "author": "David De Anda",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/omarandstuff/simple-deployer/issues"
+  },
+  "homepage": "https://github.com/omarandstuff/simple-deployer#readme"
+}
