@@ -19,5 +19,12 @@
   "bugs": {
     "url": "https://github.com/omarandstuff/simple-deployer/issues"
   },
-  "homepage": "https://github.com/omarandstuff/simple-deployer#readme"
+  "homepage": "https://github.com/omarandstuff/simple-deployer#readme",
+  "devDependencies": {
+    "standard": "^9.0.0"
+  },
+  "dependencies": {
+    "colors": "^1.1.2",
+    "ssh2": "^0.5.4"
+  }
 }
