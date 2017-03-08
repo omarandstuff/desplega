@@ -6,8 +6,6 @@ module.exports = function (commandsArray) { return {
     initialTime: process.hrtime(),
     timeAtCommand: 0,
     commandCountUp: 0,
-    commands: commandsArray || [],
-    cmdTab: '      ',
-    cmdDoneTab: '    '
+    commands: commandsArray || []
   }
 }
