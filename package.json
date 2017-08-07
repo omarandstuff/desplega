@@ -21,7 +21,7 @@
     "standard": "^9.0.2"
   },
   "dependencies": {
-    "colors": "^1.1.2",
+    "chalk": "^2.1.0",
     "ssh2": "^0.5.5"
   }
 }
