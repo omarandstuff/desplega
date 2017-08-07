@@ -1,11 +1,8 @@
 {
   "name": "simple-deployer",
   "version": "0.0.1",
-  "description": "SHH command sender that can be use to doa simple deploy.",
+  "description": "Commans excecuter that can be use to do a simple deploy or other simple server tasks.",
   "main": "index.js",
-  "scripts": {
-    "test": "standard"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/omarandstuff/simple-deployer.git"
@@ -21,7 +18,7 @@
   },
   "homepage": "https://github.com/omarandstuff/simple-deployer#readme",
   "devDependencies": {
-    "standard": "^9.0.0"
+    "standard": "^9.0.2"
   },
   "dependencies": {
     "colors": "^1.1.2",
