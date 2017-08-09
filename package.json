@@ -1,6 +1,6 @@
 {
   "name": "simple-deployer",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Commans excecuter that can be use to do a simple deploy or other simple server tasks.",
   "main": "index.js",
   "repository": {
