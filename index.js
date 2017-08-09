@@ -1,1 +1,1 @@
-module.exports = Deployer = require('./lib/Deployer')
+module.exports = require('./lib/Deployer')
