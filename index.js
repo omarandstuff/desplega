@@ -1,1 +1,1 @@
-module.exports = require('./src/simple-deployer')
+module.exports = require('./lib/Deployer')
