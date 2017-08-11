@@ -58,7 +58,7 @@ deployer.deploy(commands)
 | ------ | ------ | ------ |
 | host | undefined | domain or ip to be used in the ssh connection |
 | username | undefined | username to be used in the ssh connection |
-| port | undefined | port number to be used in the ssh connection |
+| port | 22 | port number to be used in the ssh connection |
 | privateKeyPath | ~/.ssh/id_rsa | path to the private key file to be used in the ssh connection |
 | password | undefined | server user password to be used in the ssh connection  |
 
