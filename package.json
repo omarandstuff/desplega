@@ -1,27 +1,30 @@
 {
   "name": "simple-deployer",
-  "version": "0.2.2",
-  "description": "Commans excecuter that can be use to do a simple deploy or other simple server tasks.",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/omarandstuff/simple-deployer.git"
-  },
-  "keywords": [
-    "simple",
-    "deployer"
-  ],
-  "author": "David De Anda",
+  "version": "2.0.0",
+  "description": "Automate with simplicity",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/omarandstuff/simple-deployer/issues"
-  },
   "homepage": "https://github.com/omarandstuff/simple-deployer#readme",
-  "devDependencies": {
-    "standard": "^9.0.2"
+  "repository": "github:omarandstuff/simple-deployer",
+  "bugs": "https://github.com/omarandstuff/simple-deployer/issues",
+  "keywords": [ "simple", "deployer", "automate", "ssh"],
+  "author": "David De Anda <omarandstuff@gmail.com> (https://github.com/omarandstuff)",
+  "main": "lib/simple.js",
+  "scripts": {
   },
   "dependencies": {
-    "chalk": "^2.4.1",
-    "ssh2": "^0.5.5"
+  },
+  "devDependencies": {
+  },
+  "npmName": "simple-deployer",
+  "npmFileMap": [
+    {
+      "basePath": "/dist/",
+      "files": [
+        "*.js"
+      ]
+    }
+  ],
+  "jest": {
+    "testRegex": "(/test/.*\\.spec.js)$"
   }
 }
