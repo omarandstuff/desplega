@@ -6,14 +6,29 @@
   "homepage": "https://github.com/omarandstuff/simple-deployer#readme",
   "repository": "github:omarandstuff/simple-deployer",
   "bugs": "https://github.com/omarandstuff/simple-deployer/issues",
-  "keywords": [ "simple", "deployer", "automate", "ssh"],
+  "keywords": [
+    "simple",
+    "deployer",
+    "automate",
+    "ssh"
+  ],
   "author": "David De Anda <omarandstuff@gmail.com> (https://github.com/omarandstuff)",
-  "main": "lib/simple.js",
+  "main": "dist/simple.js",
   "scripts": {
+    "build": "babel src --out-dir dist",
+    "test": "jest --watch",
+    "test:coverage": "jest --coverage --no-cache",
+    "format": "prettier --write \"{src,test}/**/*.js\""
   },
   "dependencies": {
+    "chalk": "^2.4.1",
+    "ssh2": "^0.6.1"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "jest": "^23.1.0",
+    "prettier": "^1.13.5"
   },
   "npmName": "simple-deployer",
   "npmFileMap": [
@@ -25,6 +40,9 @@
     }
   ],
   "jest": {
-    "testRegex": "(/test/.*\\.spec.js)$"
+    "testRegex": "(/test/.*\\.spec.js)$",
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ]
   }
 }
