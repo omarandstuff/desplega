@@ -16,7 +16,6 @@ child_process.exec = (command, options, callback) => {
     if (!child_process.__mockExecError) {
       lastCallback(undefined, 'stdout', 'stderr')
     } else {
-      console.log('yes')
       child_process.__mockExecError = false
       lastCallback({ error: 'Exec error' })
     }
