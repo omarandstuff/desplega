@@ -2,27 +2,26 @@ import Remote from '../src/Remote'
 import { Client } from 'ssh2'
 
 describe('Remote#connect', () => {
-  it('Connects and emmit the ready event if successfull', async () => {
+  it('Connects and emmit the ready event if successfull', () => {
     const remote = new Remote()
     const readyFunc = jest.fn()
 
-    remote.on('ready').then(readyFunc)
-
-    await remote.connect()
+    remote.on('ready', readyFunc)
+    remote.connect()
 
     expect(readyFunc.mock.calls.length).toBe(1)
   })
 
-  it('Connects and emmit the error event if unsuccesfull', async () => {
+  it('Connects and emmit the error event if unsuccesfull', () => {
     const remote = new Remote()
     const readyFunc = jest.fn()
     const errorFunc = jest.fn()
 
-    remote.on('ready').then(readyFunc)
-    remote.on('error').then(errorFunc)
+    remote.on('ready', readyFunc)
+    remote.on('error', errorFunc)
 
     Client.__mockConnectionError = true
-    await remote.connect()
+    remote.connect()
 
     expect(readyFunc.mock.calls.length).toBe(0)
     expect(errorFunc.mock.calls.length).toBe(1)
@@ -31,19 +30,19 @@ describe('Remote#connect', () => {
 })
 
 describe('Remote#close', () => {
-  it('Closes the connection and emmit the end event and then close event', async () => {
+  it('Closes the connection and emmit the end event and then close event', () => {
     const remote = new Remote()
     const endFunc = jest.fn()
     const closeFunc = jest.fn()
 
-    remote.on('end').then(() => {
+    remote.on('end', () => {
       expect(closeFunc.mock.calls.length).toBe(0)
       endFunc()
     })
-    remote.on('close').then(closeFunc)
+    remote.on('close', closeFunc)
 
-    await remote.connect()
-    await remote.close()
+    remote.connect()
+    remote.close()
 
     expect(endFunc.mock.calls.length).toBe(1)
     expect(closeFunc.mock.calls.length).toBe(1)

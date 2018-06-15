@@ -2,8 +2,8 @@ import { exec } from 'child_process'
 
 export default class Local {
   constructor(config) {
-    const env = Object.assign({ FORCE_COLOR: true }, process.env)
-    this.config = Object.assign({ env: env, maxBuffer: 8388608 }, config)
+    const env = { FORCE_COLOR: true, ...process.env }
+    this.config = { env: env, maxBuffer: 8388608, ...config }
   }
 
   exec(command, streamCallBack) {

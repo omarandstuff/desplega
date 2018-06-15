@@ -1,28 +1,23 @@
-export default class Stream {
+import EventEmitter from 'events'
+
+export default class Stream extends EventEmitter {
   constructor(withStderr = true) {
-    this.subscribers = { close: [], data: [] }
+    super()
+
     if (withStderr) {
       this.stderr = new Stream(false)
     }
   }
 
-  on(event, callback) {
-    this.subscribers[event].push(callback)
-  }
-
   __close() {
-    Object.values(this.subscribers.close).forEach(subscriber => {
-      subscriber('code', 'signal')
-    })
+    this.emit('close', 'code', 'signal')
   }
 
   __data() {
-    Object.values(this.subscribers.data).forEach(subscriber => {
-      if (this.stderr) {
-        subscriber(Buffer.from('stdout', 'utf8'))
-      } else {
-        subscriber(Buffer.from('stderr', 'utf8'))
-      }
-    })
+    if (this.stderr) {
+      this.emit('data', Buffer.from('stdout', 'utf8'))
+    } else {
+      this.emit('data', Buffer.from('stderr', 'utf8'))
+    }
   }
 }

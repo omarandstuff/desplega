@@ -1,12 +1,13 @@
-import fs from 'fs'
-const os = require('os')
+import EventEmitter from 'events'
 import { Client } from 'ssh2'
+import fs from 'fs'
+import os from 'os'
 
-export default class Remote {
+export default class Remote extends EventEmitter {
   constructor(config = {}) {
+    super()
     this.config = config
     this.connection = new Client()
-    this.subscribers = { close: [], end: [], error: [], ready: [] }
 
     this.connection.on('ready', this._onReady.bind(this))
     this.connection.on('error', this._onError.bind(this))
@@ -61,39 +62,23 @@ export default class Remote {
     })
   }
 
-  on(event) {
-    const promise = new Promise((resolve, reject) => {
-      this.subscribers[event].push = { resolve, reject }
-    })
-
-    return promise
-  }
-
   _getPrivateKey(path) {
     return fs.readFileSync(path || `${os.homedir()}/.ssh/id_rsa`)
   }
 
   _onClose() {
-    Object.values(this.subscribers.close).forEach(subscriber => {
-      subscriber.resolve()
-    })
+    this.emit('close')
   }
 
   _onEnd() {
-    Object.values(this.subscribers.end).forEach(subscriber => {
-      subscriber.resolve()
-    })
+    this.emit('end')
   }
 
   _onError(error) {
-    Object.values(this.subscribers.error).forEach(subscriber => {
-      subscriber.resolve(error)
-    })
+    this.emit('error', error)
   }
 
   _onReady() {
-    Object.values(this.subscribers.ready).forEach(subscriber => {
-      subscriber.resolve()
-    })
+    this.emit('ready')
   }
 }
