@@ -1,28 +1,28 @@
-import Connection from '../src/Connection'
+import Remote from '../src/Remote'
 import { Client } from 'ssh2'
 
-describe('Connection#connect', () => {
+describe('Remote#connect', () => {
   it('Connects and emmit the ready event if successfull', async () => {
-    const connection = new Connection()
+    const remote = new Remote()
     const readyFunc = jest.fn()
 
-    connection.on('ready').then(readyFunc)
+    remote.on('ready').then(readyFunc)
 
-    await connection.connect()
+    await remote.connect()
 
     expect(readyFunc.mock.calls.length).toBe(1)
   })
 
   it('Connects and emmit the error event if unsuccesfull', async () => {
-    const connection = new Connection()
+    const remote = new Remote()
     const readyFunc = jest.fn()
     const errorFunc = jest.fn()
 
-    connection.on('ready').then(readyFunc)
-    connection.on('error').then(errorFunc)
+    remote.on('ready').then(readyFunc)
+    remote.on('error').then(errorFunc)
 
     Client.__mockConnectionError = true
-    await connection.connect()
+    await remote.connect()
 
     expect(readyFunc.mock.calls.length).toBe(0)
     expect(errorFunc.mock.calls.length).toBe(1)
@@ -30,32 +30,32 @@ describe('Connection#connect', () => {
   })
 })
 
-describe('Connection#close', () => {
+describe('Remote#close', () => {
   it('Closes the connection and emmit the end event and then close event', async () => {
-    const connection = new Connection()
+    const remote = new Remote()
     const endFunc = jest.fn()
     const closeFunc = jest.fn()
 
-    connection.on('end').then(() => {
+    remote.on('end').then(() => {
       expect(closeFunc.mock.calls.length).toBe(0)
       endFunc()
     })
-    connection.on('close').then(closeFunc)
+    remote.on('close').then(closeFunc)
 
-    await connection.connect()
-    await connection.close()
+    await remote.connect()
+    await remote.close()
 
     expect(endFunc.mock.calls.length).toBe(1)
     expect(closeFunc.mock.calls.length).toBe(1)
   })
 })
 
-describe('Connection#exec', () => {
+describe('Remote#exec', () => {
   it('executes a remote comand and then returns its stdio', async () => {
-    const connection = new Connection()
-    await connection.connect()
+    const remote = new Remote()
+    await remote.connect()
 
-    await connection.exec('test command').then(result => {
+    await remote.exec('test command').then(result => {
       expect(result.stdout).toBe('stdout')
       expect(result.stderr).toBe('stderr')
       expect(result.code).toBe('code')
@@ -64,11 +64,11 @@ describe('Connection#exec', () => {
   })
 
   it('streams stdout and stderr before closing', async () => {
-    const connection = new Connection()
+    const remote = new Remote()
     const streamFunc = jest.fn()
-    await connection.connect()
+    await remote.connect()
 
-    await connection.exec('test command', streamFunc).then(result => {
+    await remote.exec('test command', streamFunc).then(result => {
       expect(result.stdout).toBe('stdout')
       expect(result.stderr).toBe('stderr')
       expect(result.code).toBe('code')
@@ -81,11 +81,11 @@ describe('Connection#exec', () => {
   })
 
   it('catches command error and return it', async () => {
-    const connection = new Connection()
-    await connection.connect()
+    const remote = new Remote()
+    await remote.connect()
 
     Client.__mockExecError = true
-    await connection.exec('test command').catch(result => {
+    await remote.exec('test command').catch(result => {
       expect(result).toEqual({ error: 'Exec error' })
     })
   })

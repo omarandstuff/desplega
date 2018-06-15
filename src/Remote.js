@@ -2,7 +2,7 @@ import fs from 'fs'
 const os = require('os')
 import { Client } from 'ssh2'
 
-export default class Connection {
+export default class Remote {
   constructor(config = {}) {
     this.config = config
     this.connection = new Client()
