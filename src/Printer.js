@@ -16,19 +16,21 @@ export default class Printer {
 
   draw(elements) {
     const terminalWidth = process.stdout.columns
+    const rawRender = this._buildAndFormat(elements, terminalWidth, true)
+    const nextSpaces = terminalWidth - (rawRender.length % terminalWidth) - 1
+    const rendered = `${this._buildAndFormat(elements)}${' '.repeat(nextSpaces)}`
 
-    process.stdout.write(`${' '.repeat(terminalWidth)}\r`)
-    console.log(this._buildAndFormat(elements))
+    console.log(rendered)
   }
 
-  _applyFormat(element, optionalText) {
-    if (element.style) {
+  _applyFormat(element, optionalText, raw) {
+    if (element.style && !raw) {
       return element.style(optionalText || element.text)
     }
     return optionalText || element.text
   }
 
-  _buildAndFormat(elements, availableWidth) {
+  _buildAndFormat(elements, availableWidth, raw = false) {
     const dynamicCount = this._calculateDynamicCount(elements)
     const widthPerDynamicElement = Number.parseInt(availableWidth / dynamicCount)
     const specialDynamic = widthPerDynamicElement === 0
@@ -46,13 +48,13 @@ export default class Printer {
           } else {
             const extraSpace = uncalculateDynamicSpace-- > 0 ? 1 : 0
             const blank = ' '.repeat(widthPerDynamicElement + extraSpace)
-            return this._applyFormat(element, blank)
+            return this._applyFormat(element, blank, raw)
           }
         } else if (element.fit) {
           if (specialDynamic) {
             if (availableDynamixSpace) {
               availableDynamixSpace--
-              return this._applyFormat(element, element.text[0])
+              return this._applyFormat(element, element.text[0], raw)
             }
           } else {
             const extraSpace = uncalculateDynamicSpace-- > 0 ? 1 : 0
@@ -65,13 +67,13 @@ export default class Printer {
               const extraCut = addDots ? 3 : 0
               const extraDots = addDots ? '...' : ''
               const cuttedText = element.text.substring(0, cutPosition - extraCut)
-              const rendered = this._applyFormat(element, cuttedText)
+              const rendered = this._applyFormat(element, `${cuttedText}${extraDots}`, raw)
 
-              return `${rendered}${extraDots}`
+              return `${rendered}`
             } else {
               const lack = finalWith - element.text.length
               const amplifiedText = `${element.text}${' '.repeat(lack)}`
-              const rendered = this._applyFormat(element, amplifiedText)
+              const rendered = this._applyFormat(element, amplifiedText, raw)
 
               return `${rendered}`
             }

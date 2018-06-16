@@ -161,7 +161,7 @@ describe('Printer#drawRow', () => {
     process.stdout.columns = realColumns
   })
 
-  it('justs print the text given and apply formats', () => {
+  it('justs print the text given, apply formats and fill extra spaces', () => {
     const printer = new Printer()
     const styleCall = jest.fn()
 
@@ -175,7 +175,7 @@ describe('Printer#drawRow', () => {
       }
     ])
 
-    expect(console.log.mock.calls[0][0]).toBe('Some random text')
-    expect(styleCall.mock.calls.length).toBe(1)
+    expect(console.log.mock.calls[0][0]).toBe('Some random text   ')
+    expect(styleCall.mock.calls.length).toBe(2)
   })
 })
