@@ -7,9 +7,12 @@ describe('Remote#connect', () => {
     const readyFunc = jest.fn()
 
     remote.on('ready', readyFunc)
+
+    expect(remote.status).toBe('close')
     remote.connect()
 
     expect(readyFunc.mock.calls.length).toBe(1)
+    expect(remote.status).toBe('ready')
   })
 
   it('Connects and emmit the error event if unsuccesfull', () => {
@@ -26,6 +29,7 @@ describe('Remote#connect', () => {
     expect(readyFunc.mock.calls.length).toBe(0)
     expect(errorFunc.mock.calls.length).toBe(1)
     expect(errorFunc.mock.calls[0][0]).toEqual({ error: 'Connection error' })
+    expect(remote.status).toBe('error')
   })
 })
 
@@ -46,6 +50,7 @@ describe('Remote#close', () => {
 
     expect(endFunc.mock.calls.length).toBe(1)
     expect(closeFunc.mock.calls.length).toBe(1)
+    expect(remote.status).toBe('close')
   })
 })
 
@@ -56,8 +61,7 @@ describe('Remote#exec', () => {
 
     await remote.exec('test command').then(result => {
       expect(result.stdout).toBe('stdout')
-      expect(result.stderr).toBe('stderr')
-      expect(result.code).toBe('code')
+      expect(result.code).toBe(0)
       expect(result.signal).toBe('signal')
     })
   })
@@ -69,8 +73,7 @@ describe('Remote#exec', () => {
 
     await remote.exec('test command', streamFunc).then(result => {
       expect(result.stdout).toBe('stdout')
-      expect(result.stderr).toBe('stderr')
-      expect(result.code).toBe('code')
+      expect(result.code).toBe(0)
       expect(result.signal).toBe('signal')
     })
 
@@ -86,6 +89,18 @@ describe('Remote#exec', () => {
     Client.__mockExecError = true
     await remote.exec('test command').catch(result => {
       expect(result).toEqual({ error: 'Exec error' })
+    })
+  })
+
+  it('catches command error id returned code is not 0 and return it', async () => {
+    const remote = new Remote()
+    await remote.connect()
+
+    Client.__mockExecErrorCode = true
+    await remote.exec('test command').catch(result => {
+      expect(result.stderr).toBe('stderr')
+      expect(result.code).toBe(128)
+      expect(result.signal).toBe('signal')
     })
   })
 })
