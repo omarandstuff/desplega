@@ -17,7 +17,7 @@ export default class Printer {
   draw(elements) {
     const terminalWidth = process.stdout.columns
     const rawRender = this._buildAndFormat(elements, terminalWidth, true)
-    const nextSpaces = terminalWidth - (rawRender.length % terminalWidth) - 1
+    const nextSpaces = terminalWidth - (rawRender.length % terminalWidth)
     const rendered = `${this._buildAndFormat(elements)}${' '.repeat(nextSpaces)}`
 
     console.log(rendered)

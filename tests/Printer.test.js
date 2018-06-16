@@ -175,7 +175,7 @@ describe('Printer#drawRow', () => {
       }
     ])
 
-    expect(console.log.mock.calls[0][0]).toBe('Some random text   ')
+    expect(console.log.mock.calls[0][0]).toBe('Some random text    ')
     expect(styleCall.mock.calls.length).toBe(2)
   })
 })
