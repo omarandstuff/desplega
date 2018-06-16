@@ -4,6 +4,7 @@ import Stream from './stream'
 export class Client extends EventEmitter {
   static __mockConnectionError = false
   static __mockExecError = false
+  static __mockExecErrorCode = false
 
   constructor() {
     super()
@@ -26,7 +27,8 @@ export class Client extends EventEmitter {
   }
 
   exec(command, callback) {
-    const stream = new Stream()
+    const stream = new Stream(true, Client.__mockExecErrorCode)
+    Client.__mockExecErrorCode = false
     if (!Client.__mockExecError) {
       callback(undefined, stream)
     } else {

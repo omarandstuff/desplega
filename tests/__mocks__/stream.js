@@ -1,8 +1,9 @@
 import EventEmitter from 'events'
 
 export default class Stream extends EventEmitter {
-  constructor(withStderr = true) {
+  constructor(withStderr = true, withErrorCode = false) {
     super()
+    this.withErrorCode = withErrorCode
 
     if (withStderr) {
       this.stderr = new Stream(false)
@@ -10,7 +11,7 @@ export default class Stream extends EventEmitter {
   }
 
   __close() {
-    this.emit('close', 'code', 'signal')
+    this.emit('close', this.withErrorCode ? 128 : 0, 'signal')
   }
 
   __data() {
