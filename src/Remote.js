@@ -6,10 +6,9 @@ import os from 'os'
 /**
  * Connects to a remote host and stays connected while sending commands.
  * Will reemit any events related to the connection status like (ready, error,
- * end, close)
+ * and close)
  *
- * When the connection finishes or has an error it will end the connection
- * and then close it.
+ * When the connection finishes or has an error it will close the connection.
  *
  * @param {Object} config a configuration object.
  * Configurations are:
@@ -42,7 +41,6 @@ export default class Remote extends EventEmitter {
 
     this.connection.on('ready', this._onReady.bind(this))
     this.connection.on('error', this._onError.bind(this))
-    this.connection.on('end', this._onEnd.bind(this))
     this.connection.on('close', this._onClose.bind(this))
   }
 
@@ -63,7 +61,7 @@ export default class Remote extends EventEmitter {
    * It lisens fot stdout and stderr and stream it to the stream callback, when
    * the command finishes it will resolve with the whole stdout and stderr
    * drivered form the call.
-   * 
+   *
    * If the returning code is not 0 or there si a problem with te execution it
    * rejects with the error | stderr.
    *
@@ -74,7 +72,7 @@ export default class Remote extends EventEmitter {
    *
    * @param {Function} streamCallBack A callback to be invoked on data streaming.
    * The same data printed by some command while executing, chunk by chunk
-   * 
+   *
    * @returns {Promise} Promise to be solved or rejected.
    */
   exec(command, streamCallBack) {
@@ -131,11 +129,6 @@ export default class Remote extends EventEmitter {
   _onClose() {
     this.status = 'close'
     this.emit('close')
-  }
-
-  _onEnd() {
-    this.status = 'end'
-    this.emit('end')
   }
 
   _onError(error) {

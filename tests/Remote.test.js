@@ -36,7 +36,6 @@ describe('Remote#connect', () => {
 describe('Remote#close', () => {
   it('Closes the connection and emmit the end event and then close event', () => {
     const remote = new Remote()
-    const endFunc = jest.fn()
     const closeFunc = jest.fn()
 
     remote.on('end', () => {
@@ -48,7 +47,6 @@ describe('Remote#close', () => {
     remote.connect()
     remote.close()
 
-    expect(endFunc.mock.calls.length).toBe(1)
     expect(closeFunc.mock.calls.length).toBe(1)
     expect(remote.status).toBe('close')
   })
