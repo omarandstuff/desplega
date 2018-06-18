@@ -49,6 +49,7 @@ export default class Remote extends EventEmitter {
   }
 
   connect() {
+    this.status = 'connecting'
     this.connection.connect({
       privateKey: this._getPrivateKey(this.config.privateKeyPath),
       ...this.config
