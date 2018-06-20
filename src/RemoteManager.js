@@ -1,11 +1,11 @@
-import EventEmitter from 'events'
 import Remote from './Remote'
 
-export default class RemoteManager extends EventEmitter {
+export default class RemoteManager {
   constructor(config, id, options) {
-    super()
     this.remote = new Remote(config, id)
+    this.id = id
     this.status = 'free'
+    this.feedback = 'idle'
     this.options = { maxRetries: 0, reconnectionInterval: 5000, timeOut: 0, ...options }
     this.runs = []
 
@@ -40,9 +40,11 @@ export default class RemoteManager extends EventEmitter {
         this.reject = reject
 
         if (this.remote.status === 'ready') {
+          this.feedback = 'running'
           this._run()
         }
         if (this.remote.status === 'close') {
+          this.feedback = 'connecting'
           this.remote.connect()
         }
       } else {
@@ -63,12 +65,15 @@ export default class RemoteManager extends EventEmitter {
   }
 
   _onRemoteError(error) {
-    this.currentRun.connectionErrors.push({ attempts: this.currentRun.attempts, error })
+    if (this.currentRun) {
+      this.currentRun.connectionErrors.push({ attempts: this.currentRun.attempts, error })
+    }
   }
 
   _onRemoteReady() {
     if (this.currentRun) {
       this.status = 'resolving'
+      this.feedback = 'running'
       this._run()
     }
   }
@@ -79,10 +84,9 @@ export default class RemoteManager extends EventEmitter {
     if (this.currentRun.options.timeOut) {
       this.timeOutInterval = setTimeout(() => {
         this.status = 'resolving_time_out'
+        this.feedback = 'timeout'
 
         this.remote.close()
-
-        this.emit('timeout', this.currentRun)
       }, this.currentRun.options.timeOut)
     }
 
@@ -91,10 +95,11 @@ export default class RemoteManager extends EventEmitter {
       .then(result => {
         clearTimeout(this.timeOutInterval)
         const runData = this.currentRun
-        this.status = 'free'
         this.currentRun.results[this.currentRun.reconnectionAttempts + 1].push(result)
         this.runs.push(this.currentRun)
         this.currentRun = undefined
+        this.status = 'free'
+        this.feedback = 'idle'
 
         this.resolve(runData)
       })
@@ -111,10 +116,11 @@ export default class RemoteManager extends EventEmitter {
       this.currentRun.reconnectionAttempts++
       this.currentRun.attempts = 0
 
-      this.emit('reconnection', this.currentRun)
+      this.feedback = 'waiting'
 
       await setTimeout(() => {
         this.currentRun.results[this.currentRun.reconnectionAttempts + 1] = []
+        this.feedback = 'connecting'
 
         this.remote.connect()
       }, this.currentRun.options.reconnectionInterval)
@@ -123,6 +129,7 @@ export default class RemoteManager extends EventEmitter {
       this.runs.push(this.currentRun)
       this.currentRun = undefined
       this.status = 'free'
+      this.feedback = 'idle'
 
       this.reject(runData)
     }
@@ -132,13 +139,14 @@ export default class RemoteManager extends EventEmitter {
     this.currentRun.results[this.currentRun.reconnectionAttempts + 1].push(error)
 
     if (this.currentRun.options.maxRetries >= this.currentRun.attempts) {
+      this.feedback = 'running'
       this._run()
-      this.emit('retry')
     } else {
       const runData = this.currentRun
-      this.status = 'free'
       this.runs.push(this.currentRun)
       this.currentRun = undefined
+      this.status = 'free'
+      this.feedback = 'idle'
 
       this.reject(runData)
     }
@@ -149,12 +157,12 @@ export default class RemoteManager extends EventEmitter {
 
     if (this.currentRun.options.maxRetries >= this.currentRun.attempts) {
       this.connect()
-      this.emit('retry', this.currentRun)
     } else {
       const runData = this.currentRun
-      this.status = 'free'
       this.runs.push(this.currentRun)
       this.currentRun = undefined
+      this.status = 'free'
+      this.feedback = 'idle'
 
       this.reject(runData)
     }
