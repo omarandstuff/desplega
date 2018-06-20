@@ -19,7 +19,7 @@
     "test": "jest --watch",
     "test:coverage": "jest --coverage --no-cache",
     "test:examples": "babel-node examples",
-    "test:playgroung": "babel-node playground",
+    "test:playground": "babel-node playground",
     "format": "prettier --write \"{src,test}/**/*.js\""
   },
   "dependencies": {
