@@ -1,5 +1,27 @@
 import Remote from './Remote'
 
+/**
+ * Manage a remote object to retry command failures and reconnects.
+ *
+ * When the command succeed or all retries and reconnections fails it will resolve
+ * or reject respectively.
+ *
+ * It also share an status and feddback value to watch the current status.
+ *
+ * @param {Object} config a configuration object.
+ * Configurations are: (See remote configurations)
+ *
+ * @param {String} [id] a unique id hanlded by your application.
+ * This can be used to identify remotes withing a pool of them.
+ *
+ * @param {Object} [options] default options for the exec method
+ * Options are:
+ * maxRetries: Number of times the exec method should be rerun on fail.
+ * maxReconnectionRetries: Number of times it will retry to connect on connection lost.
+ * reconnectionInterval: Time to wait before calling the connect method again.
+ * timeOut: Exec time before terminating the connection and count it as a failure.
+ *
+ */
 export default class RemoteManager {
   constructor(config, id, options) {
     this.remote = new Remote(config, id)
@@ -22,6 +44,28 @@ export default class RemoteManager {
     this.remote.connect()
   }
 
+  /**
+   * Start resolving the remote.
+   *
+   * It will call the remote exec method if fails and waith for reconnections
+   *
+   *
+   * @param {String} command the actual command string to be executed
+   *
+   * @param {Function} streamCallBack stream call back to pass to the remote object.
+   *
+   * @returns {Promise} Promise to be solved or rejected.
+   * when solving or rejecting will pass the current run information
+   * current run data is:
+   * attempts: how many attempts the last connection run before finishing
+   * command: command executed
+   * connectionErrors: How many connection errors were there
+   * options: final options used to run the command
+   * reconnectionAttempts: How many reconnections attemps were there
+   * results: results for every connection attempt
+   * streamCallBack: function called when streaming
+   *
+   */
   exec(command, streamCallBack, options = {}) {
     return new Promise((resolve, reject) => {
       if (this.status === 'free') {
