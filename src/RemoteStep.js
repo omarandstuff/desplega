@@ -269,7 +269,7 @@ export default class RemoteStep {
         style: chalk.bgHex(colors.backgroundColor)
       },
       {
-        text: `⏎ ${this.definition.command}`,
+        text: `⏎ ${this.command}`,
         style: chalk.bgHex(contrastColor).hex(color),
         fit: true
       }
