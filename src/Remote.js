@@ -23,7 +23,6 @@ import os from 'os'
  * This can be used to identify remotes withing a pool of them.
  *
  */
-
 export default class Remote extends EventEmitter {
   constructor(config, id) {
     super()
@@ -59,11 +58,11 @@ export default class Remote extends EventEmitter {
   /**
    * Execs a remote command and sets the status to ready.
    *
-   * It lisens fot stdout and stderr and stream it to the stream callback, when
+   * It listens fot stdout and stderr and stream it to the stream callback, when
    * the command finishes it will resolve with the whole stdout and stderr
    * drivered form the call.
    *
-   * If the returning code is not 0 or there si a problem with te execution it
+   * If the returning code is not 0 or there is a problem with te execution it
    * rejects with the error | stderr.
    *
    * @param {String} command the actual command string to be executed
@@ -124,7 +123,9 @@ export default class Remote extends EventEmitter {
    * @returns {String} Content o fthe file.
    */
   _getPrivateKey(path) {
-    return fs.readFileSync(path)
+    if (fs.existsSync(path)) {
+      return fs.readFileSync(path)
+    }
   }
 
   _onClose() {
