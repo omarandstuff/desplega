@@ -24,15 +24,21 @@ const colors = {
  * @param {Object} definition a definition object.
  * Definistion attributes are:
  * title: Title for this step Example: 'Install node.js'.
- * command: The actual command to be executed.
+ * command: The actual command to be executed. or a function to build a dynamic
+ *   command
+ *   function(context)
+ *     where context is the context recieved by the step it shuld comtain
+ *     a list of the results of previous steps
+ *   results history so the user 
  * path: Which path will be used as a cwd for the command.
  * remotes: Array of remote ids to filter, so the command will be
  *   executed only in those.
- * onFailure: Any object of funtion that return and Promise (Example: other RemoteStep).
- * recoverOnFailure: if the onFailure attribute is set and succeed this step will resolve
- *   instead of reject.
- * continueOnFailure: it does not matter if this step fails or onFailure fails it will resolve
- *   anyways.
+ * onFailure: Any object of funtion that return and Promise
+ *   (Example: other RemoteStep).
+ * recoverOnFailure: if the onFailure attribute is set and succeed
+ *   this step will resolve instead of reject.
+ * continueOnFailure: it does not matter if this step fails or onFailure fails
+ *   it will resolve anyways.
  * options: options to overide in the remote objects: (See RemoteManager options)
  * verbosityLevel:
  *   'full': will the streamed output of the command
@@ -86,7 +92,7 @@ export default class RemoteStep {
       this.startTime = moment()
       this.filteredRemotes = []
       this.remotesIds = []
-      this.remotesHandler = {}
+      this.currentRun = {}
       this.remotesFinished = 0
       this.verbosityLevel = this.context.verbosityLevel || this.definition.verbosityLevel
       this.options = { ...this.definition.options, ...(context.options || {}) }
@@ -95,9 +101,15 @@ export default class RemoteStep {
         if (!this.definition.remotes || this.definition.remotes.includes(remote.id)) {
           this.filteredRemotes.push(remote)
           this.remotesIds.push(remote.id)
-          this.remotesHandler[remote.id] = { status: 'online', remote: remote }
+          this.currentRun[remote.id] = { status: 'online', remote: remote }
         }
       })
+
+      if(this.definition.command instanceof Function) {
+        this.command = this.definition.command(this.context)
+      } else {
+        this.command = this.definition.command
+      }
 
       this.resolve = resolve
       this.reject = reject
@@ -106,12 +118,12 @@ export default class RemoteStep {
       this._runAnimation()
 
       this.remotesIds.forEach(id => {
-        this.remotesHandler[id].status = 'running'
-        this.remotesHandler[id].remote
-          .exec(`${this._buildPathCommand()}${this.definition.command}`, this._onStream.bind(this, id), this.options)
+        this.currentRun[id].status = 'running'
+        this.currentRun[id].remote
+          .exec(`${this._buildPathCommand()}${this.command}`, this._onStream.bind(this, id), this.options)
           .then(result => {
-            this.remotesHandler[id].status = 'done'
-            this.remotesHandler[id].result = result
+            this.currentRun[id].status = 'done'
+            this.currentRun[id].result = result
 
             if (++this.remotesFinished === this.remotesIds.length) {
               clearTimeout(this.animation)
@@ -119,8 +131,8 @@ export default class RemoteStep {
             }
           })
           .catch(error => {
-            this.remotesHandler[id].status = 'fail'
-            this.remotesHandler[id].result = error
+            this.currentRun[id].status = 'fail'
+            this.currentRun[id].result = error
 
             if (++this.remotesFinished === this.remotesIds.length) {
               clearTimeout(this.animation)
@@ -141,10 +153,10 @@ export default class RemoteStep {
   _onFailure() {
     if (this.definition.onFailure) {
       const context = {
+        ...this.context,
         remotes: this.filteredRemotes,
-        globalStartTime: this.globalStartTime,
-        caller: this,
-        stackLevel: (this.context.stackLevel || 0) + 1
+        caller: this.currentRun,
+        stackLevel: (this.context.stackLevel || 0) + 1,
       }
 
       this.definition.onFailure
@@ -152,9 +164,9 @@ export default class RemoteStep {
         .then(result => {
           if (this.definition.recoverOnFailure) {
             this._printResult()
-            this.resolve({ mainResult: this.remotesHandler, onFailureResult: result })
+            this.resolve({ mainResult: this.currentRun, onFailureResult: result })
           } else {
-            const resultData = { mainResult: this.remotesHandler, onFailureResult: result }
+            const resultData = { mainResult: this.currentRun, onFailureResult: result }
 
             if (this.definition.continueOnFailure) {
               this._printResult()
@@ -166,7 +178,7 @@ export default class RemoteStep {
           }
         })
         .catch(error => {
-          const resultData = { mainResult: this.remotesHandler, onFailureResult: error }
+          const resultData = { mainResult: this.currentRun, onFailureResult: error }
 
           if (this.definition.continueOnFailure) {
             this._printResult()
@@ -179,10 +191,10 @@ export default class RemoteStep {
     } else {
       if (this.definition.continueOnFailure) {
         this._printResult()
-        this.resolve(this.remotesHandler)
+        this.resolve(this.currentRun)
       } else {
         this._printResult(false)
-        this.reject(this.remotesHandler)
+        this.reject(this.currentRun)
       }
     }
   }
@@ -216,7 +228,7 @@ export default class RemoteStep {
 
   _onSuccess() {
     this._printResult()
-    this.resolve(this.remotesHandler)
+    this.resolve(this.currentRun)
   }
 
   _printHeader() {
@@ -267,9 +279,9 @@ export default class RemoteStep {
   _printStatus() {
     const loaders = this.remotesIds
       .map(id => {
-        if (this.remotesHandler[id].status === 'done') {
+        if (this.currentRun[id].status === 'done') {
           return '✔'
-        } else if (this.remotesHandler[id].status === 'fail') {
+        } else if (this.currentRun[id].status === 'fail') {
           return '✖'
         } else {
           return this._solveLoader(id)
@@ -317,9 +329,9 @@ export default class RemoteStep {
   _printResult(success = true) {
     const loaders = this.remotesIds
       .map(id => {
-        if (this.remotesHandler[id].status === 'done') {
+        if (this.currentRun[id].status === 'done') {
           return '✔'
-        } else if (this.remotesHandler[id].status === 'fail') {
+        } else if (this.currentRun[id].status === 'fail') {
           return `✖${id}`
         }
       })
@@ -375,10 +387,10 @@ export default class RemoteStep {
   }
 
   _solveLoader(id) {
-    const animationChars = this.loadChars[this.remotesHandler[id].remote.feedback]
+    const animationChars = this.loadChars[this.currentRun[id].remote.feedback]
     const currentLoadChar = animationChars[this.animationTick % animationChars.length]
-    const attemptsChar = this.remotesHandler[id].remote.currentRun
-      ? this._solveSuperScript(this.remotesHandler[id].remote.currentRun.attempts)
+    const attemptsChar = this.currentRun[id].remote.currentRun
+      ? this._solveSuperScript(this.currentRun[id].remote.currentRun.attempts)
       : ''
 
     return `${currentLoadChar}${attemptsChar}`
