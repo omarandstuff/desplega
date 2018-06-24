@@ -167,6 +167,18 @@ export default class RemoteStep {
     })
   }
 
+  _finish(success, resultData) {
+    this.status = 'idle'
+
+    if (success || this.definition.continueOnFailure) {
+      this._printResult()
+      this.resolve(resultData)
+    } else {
+      this._printResult(false)
+      this.reject(resultData)
+    }
+  }
+
   _onFailure() {
     if (this.definition.onFailure) {
       const context = {
@@ -179,47 +191,21 @@ export default class RemoteStep {
       this.definition.onFailure
         .run(context)
         .then(result => {
-          if (this.definition.recoverOnFailure) {
-            this._printResult()
-            this.status = 'idle'
-            this.resolve({ mainResult: this.currentRun, onFailureResult: result })
-          } else {
-            const resultData = { mainResult: this.currentRun, onFailureResult: result }
+          const resultData = { mainResult: this.currentRun, onFailureResult: result }
 
-            if (this.definition.continueOnFailure) {
-              this._printResult()
-              this.status = 'idle'
-              this.resolve(resultData)
-            } else {
-              this._printResult(false)
-              this.status = 'idle'
-              this.reject(resultData)
-            }
+          if (this.definition.recoverOnFailure) {
+            this._finish(true, resultData)
+          } else {
+            this._finish(false, resultData)
           }
         })
         .catch(error => {
           const resultData = { mainResult: this.currentRun, onFailureResult: error }
 
-          if (this.definition.continueOnFailure) {
-            this._printResult()
-            this.status = 'idle'
-            this.resolve(resultData)
-          } else {
-            this._printResult(false)
-            this.status = 'idle'
-            this.reject(resultData)
-          }
+          this._finish(false, resultData)
         })
     } else {
-      if (this.definition.continueOnFailure) {
-        this._printResult()
-        this.status = 'idle'
-        this.resolve(this.currentRun)
-      } else {
-        this._printResult(false)
-        this.status = 'idle'
-        this.reject(this.currentRun)
-      }
+      this._finish(false, this.currentRun)
     }
   }
 
@@ -251,9 +237,7 @@ export default class RemoteStep {
   }
 
   _onSuccess() {
-    this.status = 'idle'
-    this._printResult()
-    this.resolve(this.currentRun)
+    this._finish(true, this.currentRun)
   }
 
   _printHeader() {
