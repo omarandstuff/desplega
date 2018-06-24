@@ -29,7 +29,7 @@ const colors = {
  *   function(context)
  *     where context is the context recieved by the step it shuld comtain
  *     a list of the results of previous steps
- *   results history so the user 
+ *   results history so the user
  * path: Which path will be used as a cwd for the command.
  * remotes: Array of remote ids to filter, so the command will be
  *   executed only in those.
@@ -43,7 +43,7 @@ const colors = {
  * verbosityLevel:
  *   'full': will the streamed output of the command
  *   'partial': will print only the last output line in the status bar.
- * 
+ *
  */
 
 export default class RemoteStep {
@@ -60,6 +60,7 @@ export default class RemoteStep {
       waiting: ['◜', '◠', '◝', '◞', '◡', '◟']
     }
     this.superScriptChars = ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹']
+    this.status = 'idle'
 
     this.bufferedCount = 0
     this.bufferedOutput = ''
@@ -83,64 +84,72 @@ export default class RemoteStep {
 
   run(context) {
     return new Promise((resolve, reject) => {
-      this.context = context
+      if (this.status === 'idle') {
+        this.context = this._buildContext(context)
 
-      if (!this.context.remotes || this.context.remotes.length === 0) {
-        return resolve('Nothing to deploy')
-      }
+        if (this.context.remotes.length === 0) {
+          return resolve('Nothing to deploy')
+        }
 
-      this.startTime = moment()
-      this.filteredRemotes = []
-      this.remotesIds = []
-      this.currentRun = {}
-      this.remotesFinished = 0
-      this.verbosityLevel = this.context.verbosityLevel || this.definition.verbosityLevel
-      this.options = { ...this.definition.options, ...(context.options || {}) }
+        this.startTime = moment()
+        this.remotesIds = []
+        this.currentRun = {}
+        this.remotesFinished = 0
+        this.status = 'running'
 
-      this.context.remotes.forEach(remote => {
-        if (!this.definition.remotes || this.definition.remotes.includes(remote.id)) {
-          this.filteredRemotes.push(remote)
+        this.context.remotes.forEach(remote => {
           this.remotesIds.push(remote.id)
           this.currentRun[remote.id] = { status: 'online', remote: remote }
+        })
+
+        if (this.definition.command instanceof Function) {
+          this.command = this.definition.command(this.context)
+        } else {
+          this.command = this.definition.command
         }
-      })
 
-      if(this.definition.command instanceof Function) {
-        this.command = this.definition.command(this.context)
+        this.resolve = resolve
+        this.reject = reject
+
+        this._printHeader()
+        this._runAnimation()
+
+        this.remotesIds.forEach(id => {
+          this.currentRun[id].status = 'running'
+          this.currentRun[id].remote
+            .exec(`${this._buildPathCommand()}${this.command}`, this._onStream.bind(this, id), this.context.options)
+            .then(result => {
+              this.currentRun[id].status = 'done'
+              this.currentRun[id].result = result
+
+              if (++this.remotesFinished === this.remotesIds.length) {
+                clearTimeout(this.animation)
+                this._onSuccess()
+              }
+            })
+            .catch(error => {
+              this.currentRun[id].status = 'fail'
+              this.currentRun[id].result = error
+
+              if (++this.remotesFinished === this.remotesIds.length) {
+                clearTimeout(this.animation)
+                this._onFailure()
+              }
+            })
+        })
       } else {
-        this.command = this.definition.command
+        reject(new Error('Step bussy'))
       }
-
-      this.resolve = resolve
-      this.reject = reject
-
-      this._printHeader()
-      this._runAnimation()
-
-      this.remotesIds.forEach(id => {
-        this.currentRun[id].status = 'running'
-        this.currentRun[id].remote
-          .exec(`${this._buildPathCommand()}${this.command}`, this._onStream.bind(this, id), this.options)
-          .then(result => {
-            this.currentRun[id].status = 'done'
-            this.currentRun[id].result = result
-
-            if (++this.remotesFinished === this.remotesIds.length) {
-              clearTimeout(this.animation)
-              this._onSuccess()
-            }
-          })
-          .catch(error => {
-            this.currentRun[id].status = 'fail'
-            this.currentRun[id].result = error
-
-            if (++this.remotesFinished === this.remotesIds.length) {
-              clearTimeout(this.animation)
-              this._onFailure()
-            }
-          })
-      })
     })
+  }
+
+  _buildContext(context) {
+    return {
+      ...context,
+      remotes: this._filterRemotes(context.remotes),
+      options: { ...context.remoteOptions, ...this.definition.options },
+      verbosityLevel: this.definition.verbosityLevel || context.verbosityLevel
+    }
   }
 
   _buildPathCommand() {
@@ -150,13 +159,19 @@ export default class RemoteStep {
     return ''
   }
 
+  _filterRemotes(remotes) {
+    return remotes.filter(remote => {
+      return !this.definition.remotes || this.definition.remotes.includes(remote.id)
+    })
+  }
+
   _onFailure() {
     if (this.definition.onFailure) {
       const context = {
         ...this.context,
-        remotes: this.filteredRemotes,
-        caller: this.currentRun,
-        stackLevel: (this.context.stackLevel || 0) + 1,
+        childIndex: undefined,
+        stackLevel: this.context.stackLevel + 1,
+        substep: true
       }
 
       this.definition.onFailure
@@ -164,15 +179,18 @@ export default class RemoteStep {
         .then(result => {
           if (this.definition.recoverOnFailure) {
             this._printResult()
+            this.status = 'idle'
             this.resolve({ mainResult: this.currentRun, onFailureResult: result })
           } else {
             const resultData = { mainResult: this.currentRun, onFailureResult: result }
 
             if (this.definition.continueOnFailure) {
               this._printResult()
+              this.status = 'idle'
               this.resolve(resultData)
             } else {
               this._printResult(false)
+              this.status = 'idle'
               this.reject(resultData)
             }
           }
@@ -182,18 +200,22 @@ export default class RemoteStep {
 
           if (this.definition.continueOnFailure) {
             this._printResult()
+            this.status = 'idle'
             this.resolve(resultData)
           } else {
             this._printResult(false)
+            this.status = 'idle'
             this.reject(resultData)
           }
         })
     } else {
       if (this.definition.continueOnFailure) {
         this._printResult()
+        this.status = 'idle'
         this.resolve(this.currentRun)
       } else {
         this._printResult(false)
+        this.status = 'idle'
         this.reject(this.currentRun)
       }
     }
@@ -202,7 +224,7 @@ export default class RemoteStep {
   _onStream(index, stdout, stderr) {
     const output = stdout || stderr
 
-    if (this.verbosityLevel === 'full') {
+    if (this.context.verbosityLevel === 'full') {
       const finalOutput = output
         .split('\n')
         .map(line => '    '.concat(line))
@@ -217,7 +239,7 @@ export default class RemoteStep {
       ])
     }
 
-    if (this.verbosityLevel === 'partial') {
+    if (this.context.verbosityLevel === 'partial') {
       const lines = output.split('\n').filter(line => line)
 
       this.lastOutput = (lines[lines.length - 1] || '').replace(/(\r\n\t|\r|\n|\r\t)/gm, '')
@@ -235,7 +257,7 @@ export default class RemoteStep {
     let color = colors.headerColor
     let contrastColor = colors.headerContrastColor
 
-    if (this.context.caller) {
+    if (this.context.substep) {
       color = colors.subRutineColorColor
       contrastColor = colors.subRutineContrastColor
     }
@@ -246,7 +268,7 @@ export default class RemoteStep {
         style: chalk.bgHex(colors.backgroundColor)
       },
       {
-        text: ` ${this.context.stepNumber ? numeral(this.context.stepNumber).format('00') : '~'} `,
+        text: ` ${this.context.childIndex ? numeral(this.context.childIndex).format('00') : '~'} `,
         style: chalk.bgHex(color).hex(contrastColor)
       },
       {
@@ -290,7 +312,7 @@ export default class RemoteStep {
       .join(' ')
 
     const statusSpace =
-      this.verbosityLevel === 'partial'
+      this.context.verbosityLevel === 'partial'
         ? {
             text: this.lastOutput || '',
             style: chalk.bgHex(colors.statusContrastColor).hex(colors.statusColor),
@@ -309,7 +331,7 @@ export default class RemoteStep {
           style: chalk.bgHex(colors.statusColor).hex(colors.statusContrastColor)
         },
         {
-          text: ` ${this.context.stepNumber ? numeral(this.context.stepNumber).format('00') : '~'} `,
+          text: ` ${this.context.childIndex ? numeral(this.context.childIndex).format('00') : '~'} `,
           style: chalk.bgHex(colors.statusColor).hex(colors.statusContrastColor).bold
         },
         {
@@ -347,7 +369,7 @@ export default class RemoteStep {
         style: chalk.bgHex(colors.backgroundColor)
       },
       {
-        text: ` ${this.context.stepNumber ? numeral(this.context.stepNumber).format('00') : '~'} `,
+        text: ` ${this.context.childIndex ? numeral(this.context.childIndex).format('00') : '~'} `,
         style: chalk.bgHex(color).hex(contrastColor).bold
       },
       {
@@ -364,14 +386,6 @@ export default class RemoteStep {
         style: chalk.bgHex(contrastColor).hex(color)
       }
     ])
-    if (!this.context.caller) {
-      this.printer.drawRow([
-        {
-          blank: true,
-          style: chalk.bgHex(contrastColor).hex(color)
-        }
-      ])
-    }
   }
 
   _runAnimation() {
