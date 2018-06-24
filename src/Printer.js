@@ -14,13 +14,14 @@ export default class Printer {
     }
   }
 
-  draw(elements) {
+  draw(string, tabSize = 0) {
     const terminalWidth = process.stdout.columns
-    const rawRender = this._buildAndFormat(elements, terminalWidth, true)
-    const nextSpaces = terminalWidth - (rawRender.length % terminalWidth)
-    const rendered = `${this._buildAndFormat(elements)}${' '.repeat(nextSpaces)}`
+    const finalString = string.replace(/(\r|[\n]$)/g, '').split('\n').map(line => {
+      return `${' '.repeat(tabSize)}${line}`
+    }).join('\n')
 
-    console.log(rendered)
+    process.stdout.write(`${' '.repeat(terminalWidth)}\r`)
+    console.log(finalString)
   }
 
   _applyFormat(element, optionalText, raw) {

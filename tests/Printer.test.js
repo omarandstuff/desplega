@@ -161,21 +161,13 @@ describe('Printer#drawRow', () => {
     process.stdout.columns = realColumns
   })
 
-  it('justs print the text given, apply formats and fill extra spaces', () => {
+  it('clean current terminal line and apply tabsize to the string', () => {
     const printer = new Printer()
     const styleCall = jest.fn()
 
-    printer.draw([
-      {
-        text: 'Some random text',
-        style: string => {
-          styleCall()
-          return string
-        }
-      }
-    ])
+    printer.draw('Some random text', 2)
 
-    expect(console.log.mock.calls[0][0]).toBe('Some random text    ')
-    expect(styleCall.mock.calls.length).toBe(2)
+    expect(process.stdout.write.mock.calls[0][0]).toBe('          \r')
+    expect(console.log.mock.calls[0][0]).toBe('  Some random text')
   })
 })
