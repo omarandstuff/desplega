@@ -55,6 +55,7 @@ export default class LocalManager {
         this.resolve = resolve
         this.reject = reject
 
+        this.feedback = 'running'
         this._run()
       } else {
         reject(new Error('Manager is bussy'))

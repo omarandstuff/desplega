@@ -1,6 +1,7 @@
 import chalk from 'chalk'
 import moment from 'moment'
 import numeral from 'numeral'
+import ansiRegex from 'ansi-regex'
 import Printer from './Printer'
 
 const colors = {
@@ -107,24 +108,13 @@ export default class Step {
     const output = stdout || stderr
 
     if (this.context.verbosityLevel === 'full') {
-      const finalOutput = output
-        .split('\n')
-        .map(line => '    '.concat(line))
-        .join('\n')
-        .replace(/(\r\n\t|\r|\n|\r\t)/gm, '')
-
-      this.printer.drawRow([
-        {
-          text: finalOutput,
-          fit: true
-        }
-      ])
+      this.printer.draw(output, this.context.stackLevel)
     }
 
     if (this.context.verbosityLevel === 'partial') {
       const lines = output.split('\n').filter(line => line)
 
-      this.lastOutput = (lines[lines.length - 1] || '').replace(/(\r\n\t|\r|\n|\r\t)/gm, '')
+      this.lastOutput = (lines[lines.length - 1] || '').replace(/(\r\n\t|\r|\n|\r\t)/gm, '').replace(ansiRegex(), '')
     }
 
     this._printStatus()

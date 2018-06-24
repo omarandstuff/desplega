@@ -89,7 +89,7 @@ export default class RemoteStep extends Step {
         this.remotesIds.forEach(id => {
           this.currentRun[id].status = 'running'
           this.currentRun[id].remote
-            .exec(`${this._buildPathCommand()}${this.command}`, this._onStream.bind(this, id), this.context.options)
+            .exec(`${this._buildPathCommand()}${this.command}`, this._onStream.bind(this), this.context.options)
             .then(result => {
               this.currentRun[id].status = 'done'
               this.currentRun[id].result = result
