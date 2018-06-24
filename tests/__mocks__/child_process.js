@@ -2,7 +2,8 @@ import Stream from './stream'
 const child_process = jest.genMockFromModule('child_process')
 let lastStdoutStream, lastStderrStream, lastCallback
 
-child_process.__mockExecError = false
+child_process.__mockExecError = 0
+child_process.__mockExecTimeOut = 0
 
 child_process.exec = (command, _, callback) => {
   lastStdoutStream = new Stream()
@@ -10,13 +11,17 @@ child_process.exec = (command, _, callback) => {
   lastCallback = callback
 
   setTimeout(() => {
-    if (!child_process.__mockExecError) {
+    if (child_process.__mockExecError) {
+      child_process.__mockExecError = Number(child_process.__mockExecError) - 1
+      lastStderrStream.__data()
+      lastCallback({ code: 127, signal: null }, undefined, 'stderr')
+    } else if (child_process.__mockExecTimeOut) {
+      child_process.__mockExecTimeOut = Number(child_process.__mockExecTimeOut) - 1
+      lastStderrStream.__data()
+      lastCallback({ code: null, signal: 'SIGTERM' }, undefined, '')
+    } else {
       lastStdoutStream.__data()
       lastCallback(undefined, 'stdout', undefined)
-    } else {
-      lastStderrStream.__data()
-      child_process.__mockExecError = false
-      lastCallback({ error: 'Exec error' }, undefined, 'stderr')
     }
   }, 10)
 
