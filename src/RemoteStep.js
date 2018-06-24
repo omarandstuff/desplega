@@ -251,6 +251,7 @@ export default class RemoteStep {
   }
 
   _onSuccess() {
+    this.status = 'idle'
     this._printResult()
     this.resolve(this.currentRun)
   }
