@@ -1,6 +1,9 @@
 # Simple Deployer
 
 [![npm version](https://badge.fury.io/js/simple-deployer.svg)](https://www.npmjs.com/package/simple-deployer)
+[![Build Status](https://travis-ci.org/omarandstuff/simple-deployer.svg?branch=master)](https://travis-ci.org/omarandstuff/simple-deployer)
+[![Maintainability](https://api.codeclimate.com/v1/badges/e4aa4951543699892aa7/maintainability)](https://codeclimate.com/github/omarandstuff/simple-deployer/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/e4aa4951543699892aa7/test_coverage)](https://codeclimate.com/github/omarandstuff/simple-deployer/test_coverage)
 
 Simple-deployer enables you to execute a series of commands both locally and remotely via SSH. Deploy your application, backup a database or simply get the status of your server with a simple array of commands.
 
