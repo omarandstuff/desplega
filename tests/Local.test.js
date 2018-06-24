@@ -10,7 +10,11 @@ describe('Local#exec', () => {
     await local.exec('test command').then(thenFunc)
 
     expect(thenFunc.mock.calls.length).toBe(1)
-    expect(thenFunc.mock.calls[0][0]).toEqual({ stdout: 'stdout' })
+    expect(thenFunc.mock.calls[0][0]).toEqual({
+      code: 0,
+      signal: null,
+      stdout: 'stdout'
+    })
   })
 
   it('rejects if command fails', async () => {
@@ -21,7 +25,11 @@ describe('Local#exec', () => {
     await local.exec('test command').catch(catchFunc)
 
     expect(catchFunc.mock.calls.length).toBe(1)
-    expect(catchFunc.mock.calls[0][0]).toEqual({ stderr: 'stderr' })
+    expect(catchFunc.mock.calls[0][0]).toEqual({
+      code: 127,
+      signal: null,
+      stderr: 'stderr'
+    })
   })
 
   it('streams stdout and stderr before closing', async () => {
@@ -41,5 +49,20 @@ describe('Local#exec', () => {
 
     expect(streamFunc.mock.calls.length).toBe(1)
     expect(streamFunc.mock.calls[0][1]).toEqual('stderr')
+  })
+
+  it('rejects if command time out is reached', async () => {
+    const local = new Local()
+    const catchFunc = jest.fn()
+
+    child_process.__mockExecTimeOut = true
+    await local.exec('test command').catch(catchFunc)
+
+    expect(catchFunc.mock.calls.length).toBe(1)
+    expect(catchFunc.mock.calls[0][0]).toEqual({
+      code: null,
+      signal: 'SIGTERM',
+      stderr: ''
+    })
   })
 })

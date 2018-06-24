@@ -39,9 +39,9 @@ export default class Local {
     return new Promise((resolve, reject) => {
       const child = exec(command, { ...this.options, ...options }, (error, stdout, stderr) => {
         if (error) {
-          reject({ stderr })
+          reject({ code: error.code, signal: error.signal, stderr })
         } else {
-          resolve({ stdout })
+          resolve({ code: 0, signal: null, stdout })
         }
       })
 
@@ -52,6 +52,7 @@ export default class Local {
       })
 
       child.stderr.on('data', data => {
+        //console.log(data)
         if (streamCallBack) {
           streamCallBack(undefined, data.toString('utf8'))
         }
