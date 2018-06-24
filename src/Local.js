@@ -38,10 +38,10 @@ export default class Local {
   exec(command, streamCallBack, options) {
     return new Promise((resolve, reject) => {
       const child = exec(command, { ...this.options, ...options }, (error, stdout, stderr) => {
-        if (!error) {
-          resolve({ stdout, stderr })
+        if (error) {
+          reject({ stderr })
         } else {
-          reject(error)
+          resolve({ stdout })
         }
       })
 
