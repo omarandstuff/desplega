@@ -4,20 +4,19 @@ let lastStdoutStream, lastStderrStream, lastCallback
 
 child_process.__mockExecError = false
 
-child_process.exec = (command, options, callback) => {
+child_process.exec = (command, _, callback) => {
   lastStdoutStream = new Stream()
   lastStderrStream = new Stream(false)
   lastCallback = callback
 
   setTimeout(() => {
-    lastStdoutStream.__data()
-    lastStderrStream.__data()
-
     if (!child_process.__mockExecError) {
-      lastCallback(undefined, 'stdout', 'stderr')
+      lastStdoutStream.__data()
+      lastCallback(undefined, 'stdout', undefined)
     } else {
+      lastStderrStream.__data()
       child_process.__mockExecError = false
-      lastCallback({ error: 'Exec error' })
+      lastCallback({ error: 'Exec error' }, undefined, 'stderr')
     }
   }, 10)
 
