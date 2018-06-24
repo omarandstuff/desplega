@@ -47,7 +47,7 @@ export default class Printer {
             }
           } else {
             const extraSpace = uncalculateDynamicSpace-- > 0 ? 1 : 0
-            const blank = ' '.repeat(widthPerDynamicElement + extraSpace)
+            const blank = (element.symbol || ' ').repeat(widthPerDynamicElement + extraSpace)
             return this._applyFormat(element, blank, raw)
           }
         } else if (element.fit) {
