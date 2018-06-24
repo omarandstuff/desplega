@@ -179,6 +179,30 @@ export default class RemoteStep {
     }
   }
 
+  _generateLoaders(includeId) {
+    return this.remotesIds
+      .map(id => {
+        if (this.currentRun[id].status === 'done') {
+          return '✔'
+        } else if (this.currentRun[id].status === 'fail') {
+          return `✖${includeId ? id : ''}`
+        } else {
+          return this._solveLoader(id)
+        }
+      })
+      .join(' ')
+  }
+
+  _generateStatusSpace() {
+    return this.context.verbosityLevel === 'partial'
+      ? {
+          text: this.lastOutput || '',
+          style: chalk.bgHex(colors.statusContrastColor).hex(colors.statusColor),
+          fit: true
+        }
+      : { blank: true, style: chalk.bgHex(colors.statusContrastColor) }
+  }
+
   _onFailure() {
     if (this.definition.onFailure) {
       const context = {
@@ -286,26 +310,7 @@ export default class RemoteStep {
   }
 
   _printStatus() {
-    const loaders = this.remotesIds
-      .map(id => {
-        if (this.currentRun[id].status === 'done') {
-          return '✔'
-        } else if (this.currentRun[id].status === 'fail') {
-          return '✖'
-        } else {
-          return this._solveLoader(id)
-        }
-      })
-      .join(' ')
-
-    const statusSpace =
-      this.context.verbosityLevel === 'partial'
-        ? {
-            text: this.lastOutput || '',
-            style: chalk.bgHex(colors.statusContrastColor).hex(colors.statusColor),
-            fit: true
-          }
-        : { blank: true, style: chalk.bgHex(colors.statusContrastColor) }
+    const statusSpace = this._generateStatusSpace()
 
     this.printer.drawRow(
       [
@@ -322,7 +327,7 @@ export default class RemoteStep {
           style: chalk.bgHex(colors.statusColor).hex(colors.statusContrastColor).bold
         },
         {
-          text: ` ${loaders} `,
+          text: ` ${this._generateLoaders()} `,
           style: chalk.bgHex(colors.statusContrastColor).hex(colors.statusColor)
         },
         statusSpace,
@@ -336,16 +341,6 @@ export default class RemoteStep {
   }
 
   _printResult(success = true) {
-    const loaders = this.remotesIds
-      .map(id => {
-        if (this.currentRun[id].status === 'done') {
-          return '✔'
-        } else if (this.currentRun[id].status === 'fail') {
-          return `✖${id}`
-        }
-      })
-      .join(' ')
-
     const color = success ? colors.resultColor : colors.failcolor
     const contrastColor = success ? colors.resultContrastColor : colors.failContrastColor
     const successChar = success ? '✔' : '✖'
@@ -360,7 +355,7 @@ export default class RemoteStep {
         style: chalk.bgHex(color).hex(contrastColor).bold
       },
       {
-        text: ` ${loaders} `,
+        text: ` ${this._generateLoaders(true)} `,
         style: chalk.bgHex(contrastColor).hex(color),
         fit: true
       },
