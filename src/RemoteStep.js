@@ -72,9 +72,11 @@ export default class RemoteStep {
    * @param {Object} context context in which this step is runnig
    * context attributes are:
    * remotes: Array of remotes avalilable in this context
-   * stepNumber: This step can be part of a list of steps, so wich number is it.
+   * childIndex: This step can be part of a list of steps, so wich number is it.
    * globalStartTime: At what time all this started.
    * stackLevel: Tab size to be printed depending on the context.
+   * substep: In case this step was called as recovery step.
+   * verbocityLevel: Global verbocity level.
    *
    * @returns {Promise} Promise to be solved or rejected.
    * when solving or rejecting will pass the remotes results
