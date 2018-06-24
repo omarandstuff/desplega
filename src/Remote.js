@@ -19,14 +19,10 @@ import os from 'os'
  * keepaliveInterval(12000): how much time wait to check for connection status (ms)
  * keepaliveCountMax[5]: how many times check for alive signal before stop connection
  *
- * @param {String} [id] a unique id hanlded by your application.
- * This can be used to identify remotes withing a pool of them.
- *
  */
 export default class Remote extends EventEmitter {
-  constructor(config, id) {
+  constructor(config) {
     super()
-    this.id = id
     this.status = 'close'
     this.config = {
       port: 22,
@@ -34,7 +30,7 @@ export default class Remote extends EventEmitter {
       privateKeyPath: `${os.homedir()}/.ssh/id_rsa`,
       keepaliveInterval: 12000,
       keepaliveCountMax: 5,
-      ...(config || {})
+      ...config
     }
     this.connection = new Client()
 
@@ -56,7 +52,7 @@ export default class Remote extends EventEmitter {
   }
 
   /**
-   * Execs a remote command and sets the status to ready.
+   * Execs a remote command and sets the status to running.
    *
    * It listens fot stdout and stderr and stream it to the stream callback, when
    * the command finishes it will resolve with the whole stdout and stderr
