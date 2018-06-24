@@ -61,9 +61,6 @@ export default class RemoteStep {
     }
     this.superScriptChars = ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹']
     this.status = 'idle'
-
-    this.bufferedCount = 0
-    this.bufferedOutput = ''
   }
 
   /**

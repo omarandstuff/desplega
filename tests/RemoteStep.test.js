@@ -23,7 +23,7 @@ afterEach(() => {
   Client.__mockConnectionInterruption = 0
 })
 
-describe('Remote#run', () => {
+describe('RemoteStep#run', () => {
   it('Executes a remote command and return its result', async () => {
     const remoteManager = new RemoteManager({}, '#ID')
     const remoteStep = new RemoteStep({ title: 'title', command: 'command', verbosityLevel: 'full' })
