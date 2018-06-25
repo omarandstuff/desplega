@@ -1,14 +1,15 @@
 {
-  "name": "simple-deployer",
+  "name": "desplega",
   "version": "2.0.0",
   "description": "Automate with simplicity",
   "license": "MIT",
-  "homepage": "https://github.com/omarandstuff/simple-deployer#readme",
-  "repository": "github:omarandstuff/simple-deployer",
-  "bugs": "https://github.com/omarandstuff/simple-deployer/issues",
+  "homepage": "https://github.com/omarandstuff/desplega#readme",
+  "repository": "github:omarandstuff/desplega",
+  "bugs": "https://github.com/omarandstuff/desplega/issues",
   "keywords": [
     "simple",
     "deployer",
+    "desplega",
     "automate",
     "ssh"
   ],
@@ -41,7 +42,7 @@
     "prettier": "^1.13.5",
     "rimraf": "^2.6.2"
   },
-  "npmName": "simple-deployer",
+  "npmName": "desplega",
   "npmFileMap": [
     {
       "basePath": "/dist/",
