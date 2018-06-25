@@ -2,11 +2,10 @@
   <img src="https://raw.githubusercontent.com/omarandstuff/desplega/master/media/desplega-logo.png" alt="Desplega" title="Desplega" width="512">
 </h1>
 
-
-[![npm version](https://badge.fury.io/js/simple-deployer.svg)](https://www.npmjs.com/package/simple-deployer)
+[![npm version](https://badge.fury.io/js/desplega.svg)](https://www.npmjs.com/package/simple-deployer)
 [![Build Status](https://travis-ci.org/omarandstuff/desplega.svg?branch=master)](https://travis-ci.org/omarandstuff/desplega)
-[![Maintainability](https://api.codeclimate.com/v1/badges/e4aa4951543699892aa7/maintainability)](https://codeclimate.com/github/omarandstuff/simple-deployer/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/e4aa4951543699892aa7/test_coverage)](https://codeclimate.com/github/omarandstuff/simple-deployer/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/e4aa4951543699892aa7/maintainability)](https://codeclimate.com/github/omarandstuff/desplega/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/e4aa4951543699892aa7/test_coverage)](https://codeclimate.com/github/omarandstuff/desplega/test_coverage)
 
 Simple-deployer enables you to execute a series of commands both locally and remotely via SSH. Deploy your application, backup a database or simply get the status of your server with a simple array of commands.
 
