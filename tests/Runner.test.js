@@ -1,54 +1,6 @@
 import Runner from '../src/Runner'
-
-class GenericChild {
-  constructor(simulateReject) {
-    this.__sumulateReject = simulateReject
-  }
-
-  run(context) {
-    return new Promise((resolve, reject) => {
-      if (this.__sumulateReject) {
-        reject(context)
-      } else {
-        resolve(context)
-      }
-    })
-  }
-}
-
-class DummyRunner extends Runner {
-  run(context) {
-    return new Promise((resolve, reject) => {
-      this.context = context
-      this.results = []
-      this.resolve = resolve
-      this.reject = reject
-
-      this._run()
-    })
-  }
-
-  _onChildFailure(result) {
-    this.results.push(result)
-    this.reject(this.results)
-  }
-
-  _onChildSuccess(result) {
-    this.results.push(result)
-  }
-
-  _onSuccess() {
-    this.resolve(this.results)
-  }
-
-  _printHeader() {
-    this.__printedHeader = 'Header'
-  }
-
-  _printResult() {
-    this.__printedResults = 'Results'
-  }
-}
+import DummyRunner from './__dummies__/DummyRunner'
+import GenericChild from './__dummies__/GenericChild'
 
 describe('Remote#run', () => {
   it('Executes a series of child object that responds to "run" method', async () => {
@@ -62,7 +14,7 @@ describe('Remote#run', () => {
     await runner.run().then(thenFunc)
 
     expect(thenFunc.mock.calls.length).toBe(1)
-    expect(thenFunc.mock.calls[0][0]).toMatchObject([{ childIndex: 1 }, { childIndex: 2 }, { childIndex: 3 }])
+    expect(thenFunc.mock.calls[0][0]).toMatchObject(['Generic success', 'Generic success', 'Generic success'])
     expect(runner).toMatchObject({
       __printedHeader: 'Header',
       __printedResults: 'Results',
@@ -70,7 +22,7 @@ describe('Remote#run', () => {
     })
   })
 
-  it('Executes a series of child object that responds to "run" method', async () => {
+  it('rejects ths runner', async () => {
     const runner = new DummyRunner()
     const thenFunc = jest.fn()
     const catchFunc = jest.fn()
@@ -86,7 +38,7 @@ describe('Remote#run', () => {
 
     expect(thenFunc.mock.calls.length).toBe(0)
     expect(catchFunc.mock.calls.length).toBe(1)
-    expect(catchFunc.mock.calls[0][0]).toMatchObject([{ childIndex: 1 }, { childIndex: 2 }])
+    expect(catchFunc.mock.calls[0][0]).toMatchObject(['Generic success', 'Generic failure'])
     expect(runner).toMatchObject({
       __printedHeader: 'Header',
       __printedResults: 'Results',
@@ -97,18 +49,15 @@ describe('Remote#run', () => {
   it('passes the context object with child index added', async () => {
     const runner = new DummyRunner()
     const thenFunc = jest.fn()
+    const child = new GenericChild()
 
-    runner.addChild(new GenericChild())
+    runner.addChild(child)
 
     await runner.run({ attribute: 'value' }).then(thenFunc)
 
     expect(thenFunc.mock.calls.length).toBe(1)
-    expect(thenFunc.mock.calls[0][0]).toMatchObject([{ attribute: 'value', childIndex: 1 }])
-    expect(runner).toMatchObject({
-      __printedHeader: 'Header',
-      __printedResults: 'Results',
-      currentIndex: 1
-    })
+    expect(thenFunc.mock.calls[0][0]).toMatchObject(['Generic success'])
+    expect(child.context).toMatchObject({ attribute: 'value', childIndex: 1 })
   })
 
   it('throw errors if run function is not implemented', async () => {
