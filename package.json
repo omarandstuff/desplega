@@ -13,7 +13,7 @@
     "ssh"
   ],
   "author": "David De Anda <omarandstuff@gmail.com> (https://github.com/omarandstuff)",
-  "main": "dist/simple.js",
+  "main": "dist/index.js",
   "scripts": {
     "clean": "rimraf dist coverage",
     "build": "babel src --out-dir dist",
@@ -21,7 +21,9 @@
     "test:coverage": "jest --coverage --no-cache",
     "test:examples": "babel-node examples",
     "test:playground": "babel-node playground",
-    "format": "prettier --write \"{src,test}/**/*.js\""
+    "format": "prettier --write \"{src,test}/**/*.js\"",
+    "format:check": "prettier --list-different \"{src,test}/**/*.js\"",
+    "prepare": "yarn clean && yarn format:check && yarn test:coverage && yarn build"
   },
   "dependencies": {
     "ansi-regex": "^3.0.0",
