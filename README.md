@@ -4,8 +4,8 @@
 
 [![npm version](https://badge.fury.io/js/desplega.svg)](https://www.npmjs.com/package/simple-deployer)
 [![Build Status](https://travis-ci.org/omarandstuff/desplega.svg?branch=master)](https://travis-ci.org/omarandstuff/desplega)
-[![Maintainability](https://api.codeclimate.com/v1/badges/e4aa4951543699892aa7/maintainability)](https://codeclimate.com/github/omarandstuff/desplega/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/e4aa4951543699892aa7/test_coverage)](https://codeclimate.com/github/omarandstuff/desplega/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/9af99621b2c02c5fdfe7/maintainability)](https://codeclimate.com/github/omarandstuff/desplega/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/9af99621b2c02c5fdfe7/test_coverage)](https://codeclimate.com/github/omarandstuff/desplega/test_coverage)
 
 Simple-deployer enables you to execute a series of commands both locally and remotely via SSH. Deploy your application, backup a database or simply get the status of your server with a simple array of commands.
 
