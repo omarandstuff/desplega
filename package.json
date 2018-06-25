@@ -22,8 +22,8 @@
     "test:coverage": "jest --coverage --no-cache",
     "test:examples": "babel-node examples",
     "test:playground": "babel-node playground",
-    "format": "prettier --write \"{src,test}/**/*.js\"",
-    "format:check": "prettier --list-different \"{src,test}/**/*.js\"",
+    "format": "prettier --write \"{src,tests}/**/*.js\"",
+    "format:check": "prettier --list-different \"{src,tests}/**/*.js\"",
     "prepare": "yarn clean && yarn format:check && yarn test:coverage && yarn build"
   },
   "dependencies": {
