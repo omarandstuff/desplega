@@ -1,4 +1,7 @@
-# Desplega
+<h1 align="center">
+  <img src="https://raw.githubusercontent.com/omarandstuff/desplega/master/media/desplega-logo.png" alt="Desplega" title="Desplega" width="512">
+</h1>
+
 
 [![npm version](https://badge.fury.io/js/simple-deployer.svg)](https://www.npmjs.com/package/simple-deployer)
 [![Build Status](https://travis-ci.org/omarandstuff/desplega.svg?branch=master)](https://travis-ci.org/omarandstuff/desplega)
