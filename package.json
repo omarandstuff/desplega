@@ -15,6 +15,7 @@
   "author": "David De Anda <omarandstuff@gmail.com> (https://github.com/omarandstuff)",
   "main": "dist/simple.js",
   "scripts": {
+    "clean": "rimraf dist coverage",
     "build": "babel src --out-dir dist",
     "test": "jest --watch",
     "test:coverage": "jest --coverage --no-cache",
@@ -35,7 +36,8 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "jest": "^23.1.0",
-    "prettier": "^1.13.5"
+    "prettier": "^1.13.5",
+    "rimraf": "^2.6.2"
   },
   "npmName": "simple-deployer",
   "npmFileMap": [
