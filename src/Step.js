@@ -181,7 +181,9 @@ export default class Step {
 
   _printResult(success = true) {
     const successStyle = success ? this.context.theme.successStyle : this.context.theme.failureStyle
-    const successContrastStyle = success ? this.context.theme.successContrastStyle : this.context.theme.failureContrastStyle
+    const successContrastStyle = success
+      ? this.context.theme.successContrastStyle
+      : this.context.theme.failureContrastStyle
     const successWord = success ? 'DONE' : 'FAIL'
     const timeSlot = this.context.subStep
       ? {

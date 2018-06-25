@@ -16,9 +16,13 @@ export default class Printer {
 
   draw(string, tabSize = 0) {
     const terminalWidth = process.stdout.columns
-    const finalString = string.replace(/(\r|[\n]$)/g, '').split('\n').map(line => {
-      return `${' '.repeat(tabSize)}${line}`
-    }).join('\n')
+    const finalString = string
+      .replace(/(\r|[\n]$)/g, '')
+      .split('\n')
+      .map(line => {
+        return `${' '.repeat(tabSize)}${line}`
+      })
+      .join('\n')
 
     process.stdout.write(`${' '.repeat(terminalWidth)}\r`)
     console.log(finalString)
