@@ -1,4 +1,35 @@
+/**
+ * Simple runner to run a list of stages.
+ *
+ * @param {Object} title What is this pipeline prints at the top.
+ *
+ * @param {Object} config Global configurations
+ * congigurations are:
+ * localOptions: To override globaly on all local steps
+ * remoteOptions: To override globaly on all remote steps
+ * remotes: list of all remotes that will be running remote commands
+ *   (See RemoteManger config)
+ *   options: options to override just for this remote in the list
+ * verbosityLevel: to override globale for all steps
+ *
+ *  @param {Object} theme object decribing theme colors
+ * (See Theme for more info)
+ */
 export default class Printer {
+  /**
+   * Will draw a single terminal row adjusting text if necesary
+   *
+   * @param {Object} elements array of line seccions to draw
+   * options are:
+   * text: actual text to draw
+   * style: chalk function to format text
+   * fit: bool value to fit this element in the available space
+   * blank: bool value to only draw a space between text elements
+   * symbol: value to use instead of spaces when the element is clank
+   *
+   * @param {Bool} inline Keep drawing the line in the same terminal line
+   *
+   */
   drawRow(elements, inline = false) {
     const terminalWidth = process.stdout.columns
     const processedElements = this._fitElements(elements, terminalWidth)
@@ -14,6 +45,15 @@ export default class Printer {
     }
   }
 
+  /**
+   * Cleans the curren teminal line in case the teminal draw an inline raw ans
+   * prints a string adding a tab at the begining.
+   *
+   * @param {String} string actual string to draw.
+   *
+   * @param {Number} tabSize How many spaces to draw before the string.
+   *
+   */
   draw(string, tabSize = 0) {
     const terminalWidth = process.stdout.columns
     const finalString = string

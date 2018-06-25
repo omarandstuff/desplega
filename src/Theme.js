@@ -24,6 +24,27 @@ const defaultTheme = {
   successContrastColor: '#013308'
 }
 
+/**
+ * Theme object for pipile context use
+ *
+ * @param {Object} thenme What is this pipeline prints at the top.
+ * colors are:
+ * failureColor: Color for messages related to failures
+ * failureContrastColor: If set failure messages will be rendered with background
+ * backgroundColor: Background color to use for all the pipelne messages
+ * mainColor: color to use for relevant info
+ * pipelineHeaderColor: Color for pipeline header
+ * pipelineHeaderContrastColor: If set pipeline header will be rendered with background
+ * stageHeaderColor: Color for stage header
+ * stageHeaderContrastColor: If set stage header will be rendered with background
+ * stepHeaderColor: Color for step related messages
+ * stepStatusColor: Color for step status related messages
+ * subStepHeaderColor: Color for sub step related messages
+ * subStepStatusColor: Color for sub step status related messages
+ * successColor: Color for messages related to success
+ * successContrastColor: If set success messages will be rendered with background
+ *
+ */
 export default class Theme {
   constructor(theme = defaultTheme) {
     this.theme = theme

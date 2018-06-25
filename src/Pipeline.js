@@ -1,4 +1,3 @@
-import chalk from 'chalk'
 import moment from 'moment'
 import Runner from './Runner'
 import LocalManager from './LocalManager'
@@ -6,6 +5,23 @@ import RemoteManager from './RemoteManager'
 import Printer from './Printer'
 import Theme from './Theme'
 
+/**
+ * Simple runner to run a list of stages.
+ *
+ * @param {Object} title What is this pipeline prints at the top.
+ *
+ * @param {Object} config Global configurations
+ * congigurations are:
+ * localOptions: To override globaly on all local steps
+ * remoteOptions: To override globaly on all remote steps
+ * remotes: list of all remotes that will be running remote commands
+ *   (See RemoteManger config)
+ *   options: options to override just for this remote in the list
+ * verbosityLevel: to override globale for all steps
+ *
+ *  @param {Object} theme object decribing theme colors
+ * (See Theme for more info)
+ */
 export default class Pipeline extends Runner {
   constructor(title, config, theme) {
     super()
@@ -28,6 +44,9 @@ export default class Pipeline extends Runner {
     this.addChild(stage)
   }
 
+  /**
+   * Runs the secuence of stages
+   */
   run() {
     return new Promise((resolve, reject) => {
       if (this.status === 'idle') {

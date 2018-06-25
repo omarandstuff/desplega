@@ -29,7 +29,6 @@ import Step from './Step'
  *   'partial': will print only the last output line in the status bar.
  *
  */
-
 export default class RemoteStep extends Step {
   constructor(definition) {
     super(definition)
@@ -53,7 +52,6 @@ export default class RemoteStep extends Step {
    * (See RemoteManager exec method for more details)
    *
    */
-
   run(context) {
     return new Promise((resolve, reject) => {
       if (this.status === 'idle') {

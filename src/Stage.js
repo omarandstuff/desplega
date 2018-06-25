@@ -1,7 +1,19 @@
-import chalk from 'chalk'
 import moment from 'moment'
 import Runner from './Runner'
 
+/**
+ * Simple runner to run a list of steps.
+ *
+ * @param {Object} title What is this stage prints at the top.
+ *
+ * @param {Object} config Configurations for this stage block
+ * congigurations are:
+ * localOptions: To override globaly on all local steps
+ * remoteOptions: To override globaly on all remote steps
+ * remotes: Array of remotes ids to only use inside this stage
+ * verbosityLevel: to override for all steps inside this stage
+ *
+ */
 export default class Stage extends Runner {
   constructor(title, config) {
     super()
@@ -14,6 +26,9 @@ export default class Stage extends Runner {
     this.addChild(step)
   }
 
+  /**
+   * Runs the secuence of stages
+   */
   run(context) {
     return new Promise((resolve, reject) => {
       if (this.status === 'idle') {

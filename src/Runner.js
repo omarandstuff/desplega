@@ -1,5 +1,10 @@
 import Printer from './Printer'
 
+/**
+ * Base runner object to runa secuances of runnables
+ *
+ */
+
 export default class Runner {
   constructor() {
     this.children = []
