@@ -45,7 +45,7 @@ export default class RemoteStep extends Step {
    * childIndex: This step can be part of a list of steps, so wich number is it.
    * globalStartTime: At what time all this started.
    * stackLevel: Tab size to be printed depending on the context.
-   * substep: In case this step was called as recovery step.
+   * subStep: In case this step was called as recovery step.
    * verbocityLevel: Global verbocity level.
    *
    * @returns {Promise} Promise to be solved or rejected.

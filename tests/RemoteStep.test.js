@@ -1,6 +1,7 @@
 jest.mock('fs')
 import RemoteStep from '../src/RemoteStep'
 import RemoteManager from '../src/RemoteManager'
+import Theme from '../src/Theme'
 import { Client } from 'ssh2'
 
 const realLog = console.log
@@ -29,7 +30,7 @@ describe('RemoteStep#run', () => {
     const remoteStep = new RemoteStep({ title: 'title', command: 'command', verbosityLevel: 'full' })
     const thenFunc = jest.fn()
 
-    await remoteStep.run({ remotes: [remoteManager], childIndex: 5 }).then(thenFunc)
+    await remoteStep.run({ remotes: [remoteManager], childIndex: 5, theme: new Theme() }).then(thenFunc)
 
     expect(thenFunc.mock.calls.length).toBe(1)
     expect(thenFunc.mock.calls[0][0]).toMatchObject({
@@ -64,7 +65,7 @@ describe('RemoteStep#run', () => {
     const remoteStep = new RemoteStep({ command: 'command', remotes: ['#ID3'] })
     const thenFunc = jest.fn()
 
-    await remoteStep.run({ remotes: [remoteManager, remoteManager2, remoteManager3] }).then(thenFunc)
+    await remoteStep.run({ remotes: [remoteManager, remoteManager2, remoteManager3], theme: new Theme()  }).then(thenFunc)
 
     expect(remoteStep.remotesIds === ['#ID3'])
     expect(thenFunc.mock.calls.length).toBe(1)
@@ -93,7 +94,7 @@ describe('RemoteStep#run', () => {
     })
     const thenFunc = jest.fn()
 
-    await remoteStep.run({ remotes: [remoteManager], childIndex: 5 }).then(thenFunc)
+    await remoteStep.run({ remotes: [remoteManager], childIndex: 5, theme: new Theme()  }).then(thenFunc)
 
     expect(thenFunc.mock.calls.length).toBe(1)
     expect(thenFunc.mock.calls[0][0]).toMatchObject({
@@ -119,7 +120,7 @@ describe('RemoteStep#run', () => {
     const thenFunc = jest.fn()
 
     Client.__mockExecErrorCode = 2
-    await remoteStep.run({ remotes: [remoteManager, remoteManager2, remoteManager3], childIndex: 5 }).then(thenFunc)
+    await remoteStep.run({ remotes: [remoteManager, remoteManager2, remoteManager3], childIndex: 5, theme: new Theme()  }).then(thenFunc)
 
     expect(thenFunc.mock.calls.length).toBe(1)
     expect(thenFunc.mock.calls[0][0]).toMatchObject({
@@ -165,7 +166,7 @@ describe('RemoteStep#run', () => {
     const remoteStep = new RemoteStep({ title: 'title', command: command, verbosityLevel: 'full' })
     const thenFunc = jest.fn()
 
-    await remoteStep.run({ remotes: [remoteManager] }).then(thenFunc)
+    await remoteStep.run({ remotes: [remoteManager], theme: new Theme()  }).then(thenFunc)
 
     expect(thenFunc.mock.calls.length).toBe(1)
     expect(thenFunc.mock.calls[0][0]).toMatchObject({
@@ -191,7 +192,7 @@ describe('RemoteStep#run', () => {
 
     remoteStep.status = 'running'
     await remoteStep
-      .run({ remotes: [remoteManager], childIndex: 5 })
+      .run({ remotes: [remoteManager], childIndex: 5, theme: new Theme()  })
       .then(thenFunc)
       .catch(catchFunc)
 
@@ -209,7 +210,7 @@ describe('RemoteStep#run', () => {
 
       Client.__mockExecErrorCode = true
       await remoteStep
-        .run({ remotes: [remoteManager], childIndex: 5 })
+        .run({ remotes: [remoteManager], childIndex: 5, theme: new Theme()  })
         .then(thenFunc)
         .catch(catchFunc)
 
@@ -239,7 +240,7 @@ describe('RemoteStep#run', () => {
 
       Client.__mockExecErrorCode = true
       await remoteStep
-        .run({ remotes: [remoteManager], childIndex: 5 })
+        .run({ remotes: [remoteManager], childIndex: 5, theme: new Theme()  })
         .then(thenFunc)
         .catch(catchFunc)
 
@@ -287,7 +288,7 @@ describe('RemoteStep#run', () => {
       const thenFunc = jest.fn()
 
       Client.__mockExecErrorCode = true
-      await remoteStep.run({ remotes: [remoteManager], childIndex: 5 }).then(thenFunc)
+      await remoteStep.run({ remotes: [remoteManager], childIndex: 5, theme: new Theme()  }).then(thenFunc)
 
       expect(thenFunc.mock.calls.length).toBe(1)
       expect(thenFunc.mock.calls[0][0]).toMatchObject({
@@ -334,7 +335,7 @@ describe('RemoteStep#run', () => {
 
       Client.__mockExecErrorCode = 2
       await remoteStep
-        .run({ remotes: [remoteManager], childIndex: 5 })
+        .run({ remotes: [remoteManager], childIndex: 5, theme: new Theme()  })
         .then(thenFunc)
         .catch(catchFunc)
 
@@ -378,7 +379,7 @@ describe('RemoteStep#run', () => {
       const thenFunc = jest.fn()
 
       Client.__mockExecErrorCode = true
-      await remoteStep.run({ remotes: [remoteManager], childIndex: 5 }).then(thenFunc)
+      await remoteStep.run({ remotes: [remoteManager], childIndex: 5, theme: new Theme()  }).then(thenFunc)
 
       expect(thenFunc.mock.calls.length).toBe(1)
       expect(thenFunc.mock.calls[0][0]).toMatchObject({
@@ -408,7 +409,7 @@ describe('RemoteStep#run', () => {
       const thenFunc = jest.fn()
 
       Client.__mockExecErrorCode = true
-      await remoteStep.run({ remotes: [remoteManager], childIndex: 5 }).then(thenFunc)
+      await remoteStep.run({ remotes: [remoteManager], childIndex: 5, theme: new Theme()  }).then(thenFunc)
 
       expect(thenFunc.mock.calls.length).toBe(1)
       expect(thenFunc.mock.calls[0][0]).toMatchObject({
@@ -454,7 +455,7 @@ describe('RemoteStep#run', () => {
       const thenFunc = jest.fn()
 
       Client.__mockExecErrorCode = 2
-      await remoteStep.run({ remotes: [remoteManager], childIndex: 5 }).then(thenFunc)
+      await remoteStep.run({ remotes: [remoteManager], childIndex: 5, theme: new Theme()  }).then(thenFunc)
 
       expect(thenFunc.mock.calls.length).toBe(1)
       expect(thenFunc.mock.calls[0][0]).toMatchObject({

@@ -4,20 +4,6 @@ import numeral from 'numeral'
 import ansiRegex from 'ansi-regex'
 import Printer from './Printer'
 
-const colors = {
-  backgroundColor: '#2b2b2b',
-  headerColor: '#ffb600',
-  headerContrastColor: '#2b2b2b',
-  failcolor: '#8c1404',
-  failContrastColor: '#2b2b2b',
-  subRutineColorColor: '#c63500',
-  subRutineContrastColor: '#2b2b2b',
-  resultColor: '#058c14',
-  resultContrastColor: '#2b2b2b',
-  statusColor: '#ffb600',
-  statusContrastColor: '#2b2b2b'
-}
-
 /**
  * Base step class.
  *
@@ -29,6 +15,7 @@ export default class Step {
     this.printer = new Printer()
     this.definition = definition
     this.animationTick = 0
+    this.animationFraction = 0.0
     this.typeIcon = 'ssh'
     this.loadChars = {
       connecting: ['✶', '✸', '✹', '✺', '✹', '✷'],
@@ -64,23 +51,13 @@ export default class Step {
     }
   }
 
-  _generateStatusSpace() {
-    return this.context.verbosityLevel === 'partial'
-      ? {
-          text: this.lastOutput || '',
-          style: chalk.bgHex(colors.statusContrastColor).hex(colors.statusColor),
-          fit: true
-        }
-      : { blank: true, style: chalk.bgHex(colors.statusContrastColor) }
-  }
-
   _onFailure() {
     if (this.definition.onFailure) {
       const context = {
         ...this.context,
         childIndex: undefined,
         stackLevel: this.context.stackLevel + 1,
-        substep: true
+        subStep: true
       }
 
       this.definition.onFailure
@@ -125,121 +102,146 @@ export default class Step {
   }
 
   _printHeader() {
-    let color = colors.headerColor
-    let contrastColor = colors.headerContrastColor
-
-    if (this.context.substep) {
-      color = colors.subRutineColorColor
-      contrastColor = colors.subRutineContrastColor
-    }
+    const style = this.context.subStep ? this.context.theme.subStepHeaderStyle : this.context.theme.stepHeaderStyle
 
     this.printer.drawRow([
       {
         text: `${' '.repeat(this.context.stackLevel || 0)}`,
-        style: chalk.bgHex(colors.backgroundColor)
+        style: this.context.theme.backgroundStyle
       },
       {
-        text: ` ${this.context.childIndex ? numeral(this.context.childIndex).format('00') : '~'} `,
-        style: chalk.bgHex(color).hex(contrastColor)
+        text: `${this.context.childIndex ? numeral(this.context.childIndex).format('00') : '~'} `,
+        style: style
       },
       {
-        text: ` ${this.definition.title} `,
-        style: chalk.bgHex(contrastColor).hex(color).bold
+        text: `${this.definition.title} `,
+        style: this.context.theme.mainStyle.bold
       },
       {
-        text: ` ${this.typeIcon} ${this.definition.path || '~/'} `,
-        style: chalk.bgHex(color).hex(contrastColor),
+        text: `${this.typeIcon} `,
+        style: style
+      },
+      {
+        text: `${this.definition.path || '~/'}`,
+        style: this.context.theme.mainStyle,
         fit: true
-      },
-      {
-        text: ` ${this.startTime.format('hh[:]mma')} `,
-        style: chalk.bgHex(contrastColor).hex(color).bold
       }
     ])
     this.printer.drawRow([
       {
         text: `${' '.repeat(this.context.stackLevel || 0)}`,
-        style: chalk.bgHex(colors.backgroundColor)
+        style: style
       },
       {
         text: `⏎ ${this.command}`,
-        style: chalk.bgHex(contrastColor).hex(color),
+        style: style.dim,
         fit: true
       }
     ])
   }
 
   _printStatus() {
-    const statusSpace = this._generateStatusSpace()
+    const style = this.context.subStep ? this.context.theme.subStepStatusStyle : this.context.theme.stepStatusStyle
+
+    const statusSpace =
+      this.context.verbosityLevel === 'partial'
+        ? {
+            text: this.lastOutput || '',
+            style: this.context.theme.mainStyle,
+            fit: true
+          }
+        : {
+            blank: true,
+            style: this.context.theme.backgroundStyle
+          }
 
     this.printer.drawRow(
       [
         {
           text: `${' '.repeat(this.context.stackLevel || 0)}`,
-          style: chalk.bgHex(colors.backgroundColor)
+          style: this.context.theme.backgroundStyle
         },
         {
-          text: ` ▶▶`,
-          style: chalk.bgHex(colors.statusColor).hex(colors.statusContrastColor)
+          text: `▶▶ `,
+          style: style
         },
         {
-          text: ` ${this.context.childIndex ? numeral(this.context.childIndex).format('00') : '~'} `,
-          style: chalk.bgHex(colors.statusColor).hex(colors.statusContrastColor).bold
+          text: `${this._solveDuration(this.startTime)}`,
+          style: this.context.theme.mainStyle
         },
         {
           text: ` ${this._generateLoaders()} `,
-          style: chalk.bgHex(colors.statusContrastColor).hex(colors.statusColor)
+          style: style
         },
-        statusSpace,
-        {
-          text: ` ${this._solveDuration(this.startTime)} `,
-          style: chalk.bgHex(colors.statusContrastColor).hex(colors.statusColor).bold
-        }
+        statusSpace
       ],
       true
     )
   }
 
   _printResult(success = true) {
-    const color = success ? colors.resultColor : colors.failcolor
-    const contrastColor = success ? colors.resultContrastColor : colors.failContrastColor
-    const successChar = success ? '✔' : '✖'
+    const successStyle = success ? this.context.theme.successStyle : this.context.theme.failureStyle
+    const successContrastStyle = success ? this.context.theme.successContrastStyle : this.context.theme.failureContrastStyle
+    const successWord = success ? 'DONE' : 'FAIL'
+    const timeSlot = this.context.subStep
+      ? {
+          text: ` ${moment().format('hh[:]mma')} `,
+          style: successStyle
+        }
+      : {
+          text: ''
+        }
+    const successWordSlot = this.context.subStep
+      ? {
+          text: ` SUB STEP `,
+          style: this.context.theme.subStepStatusContrastStyle.bold
+        }
+      : {
+          text: ` ${successWord} `,
+          style: successContrastStyle.bold
+        }
 
     this.printer.drawRow([
       {
         text: `${' '.repeat(this.context.stackLevel || 0)}`,
-        style: chalk.bgHex(colors.backgroundColor)
+        style: this.context.theme.backgroundStyle
+      },
+      successWordSlot,
+      {
+        text: ` ${this._solveDuration(this.startTime)}`,
+        style: this.context.theme.mainStyle
       },
       {
-        text: ` ${this.context.childIndex ? numeral(this.context.childIndex).format('00') : '~'} `,
-        style: chalk.bgHex(color).hex(contrastColor).bold
+        text: ` ${this._generateLoaders(true)}`,
+        style: successStyle
       },
       {
-        text: ` ${this._generateLoaders(true)} `,
-        style: chalk.bgHex(contrastColor).hex(color),
-        fit: true
+        blank: true,
+        style: this.context.theme.backgroundStyle
       },
-      {
-        text: ` ${successChar} ${this._solveDuration(this.startTime)} `,
-        style: chalk.bgHex(contrastColor).hex(color)
-      },
-      {
-        text: ` ● ${this._solveDuration(this.context.globalStartTime)} `,
-        style: chalk.bgHex(contrastColor).hex(color)
-      }
+      timeSlot
     ])
   }
 
   _runAnimation() {
     this.animation = setInterval(() => {
-      this.animationTick++
+      this.animationFraction += 0.02
+      this.animationTick = parseInt(this.animationFraction)
       this._printStatus()
-    }, 100)
+    }, 1)
   }
 
   _solveDuration(time) {
-    const duration = moment.duration(moment().diff(moment(time)))
-    return numeral(duration.asSeconds()).format('00:00:00')
+    const diference = moment().diff(time)
+    const duration = moment.duration(diference)
+
+    if (duration.hours() > 0) {
+      return moment(diference).format('hh[:]mm[:]ss[.]SSS')
+    } else if (duration.minutes() > 0) {
+      return moment(diference).format('mm[:]ss[.]SSS')
+    } else {
+      return moment(diference).format('ss[.]SSS')
+    }
   }
 
   _solveSuperScript(number) {
