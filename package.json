@@ -43,15 +43,11 @@
     "prettier": "^1.13.5",
     "rimraf": "^2.6.2"
   },
-  "npmName": "desplega",
-  "npmFileMap": [
-    {
-      "basePath": "/dist/",
-      "files": [
-        "*.js"
-      ]
-    }
+  "files": [
+    "dist",
+    "src"
   ],
+  "npmName": "desplega",
   "jest": {
     "collectCoverageFrom": [
       "src/**/*.js"
