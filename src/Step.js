@@ -187,12 +187,13 @@ export default class Step {
     const successWord = success ? 'DONE' : 'FAIL'
     const timeSlot = this.context.subStep
       ? {
+          text: ''
+        }
+      : {
           text: ` ${moment().format('hh[:]mma')} `,
           style: successStyle
         }
-      : {
-          text: ''
-        }
+
     const successWordSlot = this.context.subStep
       ? {
           text: ` SUB STEP `,
