@@ -1,11 +1,11 @@
 import RemoteManager from '../src/RemoteManager'
-import { Client } from 'ssh2'
+import ssh from 'ssh2'
 
 afterEach(() => {
-  Client.__mockExecErrorCode = 0
-  Client.__mockExecError = 0
-  Client.__mockExecTimeOut = 0
-  Client.__mockConnectionInterruption = 0
+  ssh.__mockExecErrorCode = 0
+  ssh.__mockExecError = 0
+  ssh.__mockExecTimeOut = 0
+  ssh.__mockConnectionInterruption = 0
 })
 
 describe('Remote#connect', () => {
@@ -92,7 +92,7 @@ describe('Remote#exec', () => {
     const remoteManager = new RemoteManager()
     const catchFunc = jest.fn()
 
-    Client.__mockExecErrorCode = true
+    ssh.__mockExecErrorCode = true
     await remoteManager.exec('command').catch(catchFunc)
 
     expect(catchFunc.mock.calls.length).toBe(1)
@@ -111,7 +111,7 @@ describe('Remote#exec', () => {
     const remoteManager = new RemoteManager()
     const catchFunc = jest.fn()
 
-    Client.__mockExecTimeOut = true
+    ssh.__mockExecTimeOut = true
     await remoteManager.exec('command', undefined, { timeOut: 1 }).catch(catchFunc)
 
     expect(catchFunc.mock.calls.length).toBe(1)
@@ -131,8 +131,8 @@ describe('Remote#exec', () => {
       const remoteManager = new RemoteManager()
       const catchFunc = jest.fn()
 
-      Client.__mockExecErrorCode = 2
-      Client.__mockExecTimeOut = 2
+      ssh.__mockExecErrorCode = 2
+      ssh.__mockExecTimeOut = 2
       await remoteManager.exec('command', undefined, { timeOut: 1, maxRetries: 3 }).catch(catchFunc)
 
       expect(catchFunc.mock.calls.length).toBe(1)
@@ -159,8 +159,8 @@ describe('Remote#exec', () => {
       const catchFunc = jest.fn()
       const thenFunc = jest.fn()
 
-      Client.__mockExecErrorCode = 2
-      Client.__mockExecTimeOut = 2
+      ssh.__mockExecErrorCode = 2
+      ssh.__mockExecTimeOut = 2
       await remoteManager
         .exec('command', undefined, { timeOut: 1, maxRetries: 4 })
         .then(thenFunc)
@@ -193,10 +193,10 @@ describe('Remote#exec', () => {
       const remoteManager = new RemoteManager()
       const catchFunc = jest.fn()
 
-      Client.__mockExecErrorCode = 2
-      Client.__mockExecError = 2
-      Client.__mockExecTimeOut = 2
-      Client.__mockConnectionInterruption = 3
+      ssh.__mockExecErrorCode = 2
+      ssh.__mockExecError = 2
+      ssh.__mockExecTimeOut = 2
+      ssh.__mockConnectionInterruption = 3
       await remoteManager
         .exec('command', undefined, { timeOut: 1, maxRetries: 7, maxReconnectionRetries: 2, reconnectionInterval: 1 })
         .catch(catchFunc)
@@ -244,7 +244,7 @@ describe('Remote#exec', () => {
       const thenFunc = jest.fn()
       const catchFunc = jest.fn()
 
-      Client.__mockConnectionInterruption = 2
+      ssh.__mockConnectionInterruption = 2
       await remoteManager
         .exec('command', undefined, { maxReconnectionRetries: 3, reconnectionInterval: 1 })
         .then(thenFunc)

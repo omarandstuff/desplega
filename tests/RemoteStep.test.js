@@ -2,7 +2,7 @@ jest.mock('fs')
 import RemoteStep from '../src/RemoteStep'
 import RemoteManager from '../src/RemoteManager'
 import Theme from '../src/Theme'
-import { Client } from 'ssh2'
+import ssh from 'ssh2'
 
 const realLog = console.log
 const realWrite = process.stdout.write
@@ -18,10 +18,10 @@ afterAll(() => {
 })
 
 afterEach(() => {
-  Client.__mockExecErrorCode = 0
-  Client.__mockExecError = 0
-  Client.__mockExecTimeOut = 0
-  Client.__mockConnectionInterruption = 0
+  ssh.__mockExecErrorCode = 0
+  ssh.__mockExecError = 0
+  ssh.__mockExecTimeOut = 0
+  ssh.__mockConnectionInterruption = 0
 })
 
 describe('RemoteStep#run', () => {
@@ -121,7 +121,7 @@ describe('RemoteStep#run', () => {
     const remoteStep = new RemoteStep({ title: 'title', command: 'command', continueOnFailure: true })
     const thenFunc = jest.fn()
 
-    Client.__mockExecErrorCode = 2
+    ssh.__mockExecErrorCode = 2
     await remoteStep
       .run({ remotes: [remoteManager, remoteManager2, remoteManager3], childIndex: 5, theme: new Theme() })
       .then(thenFunc)
@@ -212,7 +212,7 @@ describe('RemoteStep#run', () => {
       const thenFunc = jest.fn()
       const catchFunc = jest.fn()
 
-      Client.__mockExecErrorCode = true
+      ssh.__mockExecErrorCode = true
       await remoteStep
         .run({ remotes: [remoteManager], childIndex: 5, theme: new Theme() })
         .then(thenFunc)
@@ -242,7 +242,7 @@ describe('RemoteStep#run', () => {
       const thenFunc = jest.fn()
       const catchFunc = jest.fn()
 
-      Client.__mockExecErrorCode = true
+      ssh.__mockExecErrorCode = true
       await remoteStep
         .run({ remotes: [remoteManager], childIndex: 5, theme: new Theme() })
         .then(thenFunc)
@@ -291,7 +291,7 @@ describe('RemoteStep#run', () => {
       })
       const thenFunc = jest.fn()
 
-      Client.__mockExecErrorCode = true
+      ssh.__mockExecErrorCode = true
       await remoteStep.run({ remotes: [remoteManager], childIndex: 5, theme: new Theme() }).then(thenFunc)
 
       expect(thenFunc.mock.calls.length).toBe(1)
@@ -337,7 +337,7 @@ describe('RemoteStep#run', () => {
       const thenFunc = jest.fn()
       const catchFunc = jest.fn()
 
-      Client.__mockExecErrorCode = 2
+      ssh.__mockExecErrorCode = 2
       await remoteStep
         .run({ remotes: [remoteManager], childIndex: 5, theme: new Theme() })
         .then(thenFunc)
@@ -382,7 +382,7 @@ describe('RemoteStep#run', () => {
       const remoteStep = new RemoteStep({ title: 'title', command: 'command', continueOnFailure: true })
       const thenFunc = jest.fn()
 
-      Client.__mockExecErrorCode = true
+      ssh.__mockExecErrorCode = true
       await remoteStep.run({ remotes: [remoteManager], childIndex: 5, theme: new Theme() }).then(thenFunc)
 
       expect(thenFunc.mock.calls.length).toBe(1)
@@ -412,7 +412,7 @@ describe('RemoteStep#run', () => {
       })
       const thenFunc = jest.fn()
 
-      Client.__mockExecErrorCode = true
+      ssh.__mockExecErrorCode = true
       await remoteStep.run({ remotes: [remoteManager], childIndex: 5, theme: new Theme() }).then(thenFunc)
 
       expect(thenFunc.mock.calls.length).toBe(1)
@@ -458,7 +458,7 @@ describe('RemoteStep#run', () => {
       })
       const thenFunc = jest.fn()
 
-      Client.__mockExecErrorCode = 2
+      ssh.__mockExecErrorCode = 2
       await remoteStep.run({ remotes: [remoteManager], childIndex: 5, theme: new Theme() }).then(thenFunc)
 
       expect(thenFunc.mock.calls.length).toBe(1)

@@ -1,5 +1,5 @@
 import Remote from '../src/Remote'
-import { Client } from 'ssh2'
+import ssh from 'ssh2'
 
 describe('Remote#connect', () => {
   it('Connects and emmit the ready event if successfull', () => {
@@ -23,7 +23,7 @@ describe('Remote#connect', () => {
     remote.on('ready', readyFunc)
     remote.on('error', errorFunc)
 
-    Client.__mockConnectionError = true
+    ssh.__mockConnectionError = true
     remote.connect()
 
     expect(readyFunc.mock.calls.length).toBe(0)
@@ -84,7 +84,7 @@ describe('Remote#exec', () => {
     const remote = new Remote()
     await remote.connect()
 
-    Client.__mockExecError = true
+    ssh.__mockExecError = true
     await remote.exec('test command').catch(result => {
       expect(result).toEqual({ error: 'Exec error' })
     })
@@ -94,7 +94,7 @@ describe('Remote#exec', () => {
     const remote = new Remote()
     await remote.connect()
 
-    Client.__mockExecErrorCode = true
+    ssh.__mockExecErrorCode = true
     await remote.exec('test command').catch(result => {
       expect(result.stderr).toBe('stderr')
       expect(result.code).toBe(128)
