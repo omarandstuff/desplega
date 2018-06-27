@@ -1,20 +1,19 @@
-import _Pipeline from './Pipeline'
-import _Stage from './Stage'
-import _LocalStep from './LocalStep'
-import _RemoteStep from './RemoteStep'
+#! /usr/bin/env node
+import program from 'commander'
+import Loader from './Loader'
+import Builder from './Builder'
 
-export function Pipeline(title, config, theme) {
-  return new _Pipeline(title, config, theme)
-}
+program.version('0.1.0').description('Desplega command line tool')
 
-export function Stage(title, config) {
-  return new _Stage(title, config)
-}
+program
+  .command('run [env]')
+  .description('run the desplega file in the current directory')
+  .allowUnknownOption()
+  .action(function(env, options) {
+    const descriptor = Loader.load(env)
+    const pipeline = Builder.build(descriptor)
 
-export function LocalStep(definition) {
-  return new _LocalStep(definition)
-}
+    pipeline.run()
+  })
 
-export function RemoteStep(definition) {
-  return new _RemoteStep(definition)
-}
+program.parse(process.argv)

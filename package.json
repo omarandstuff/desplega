@@ -6,38 +6,26 @@
   "homepage": "https://github.com/omarandstuff/desplega#readme",
   "repository": "github:omarandstuff/desplega",
   "bugs": "https://github.com/omarandstuff/desplega/issues",
-  "keywords": [
-    "simple",
-    "deployer",
-    "desplega",
-    "automate",
-    "ssh"
-  ],
   "author": "David De Anda <omarandstuff@gmail.com> (https://github.com/omarandstuff)",
-  "main": "dist/index.js",
   "scripts": {
     "clean": "rimraf dist coverage",
     "build": "babel src --out-dir dist",
     "test": "jest --watch",
     "test:coverage": "jest --coverage --no-cache",
-    "test:examples": "babel-node examples",
-    "test:playground": "babel-node playground",
+    "playground": "babel-node playground",
     "format": "prettier --write \"{src,tests}/**/*.js\"",
     "format:check": "prettier --list-different \"{src,tests}/**/*.js\"",
     "prepare": "yarn clean && yarn format:check && yarn test:coverage && yarn build"
   },
   "dependencies": {
-    "ansi-regex": "^3.0.0",
-    "babel-runtime": "^6.26.0",
-    "chalk": "^2.4.1",
-    "moment": "^2.22.2",
-    "numeral": "^2.0.6",
-    "ssh2": "^0.6.1"
+    "commander": "^2.15.1",
+    "desplega-api": "^2.0.6",
+    "js-yaml": "^3.12.0",
+    "minimist": "^1.2.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
     "jest": "^23.1.0",
     "prettier": "^1.13.5",
@@ -47,10 +35,22 @@
     "dist",
     "src"
   ],
-  "npmName": "desplega",
+  "main": "dist/index.js",
+  "preferGlobal": true,
+  "bin": {
+    "desplega": "dist/index.js"
+  },
   "jest": {
     "collectCoverageFrom": [
       "src/**/*.js"
     ]
-  }
+  },
+  "keywords": [
+    "simple",
+    "deployer",
+    "desplega",
+    "automate",
+    "ssh",
+    "pipeline"
+  ]
 }
