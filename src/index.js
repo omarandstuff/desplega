@@ -1,19 +1,13 @@
 #! /usr/bin/env node
 import program from 'commander'
-import Loader from './Loader'
-import Builder from './Builder'
+import run from './run'
 
 program.version('0.1.0').description('Desplega command line tool')
 
 program
-  .command('run [env]')
-  .description('run the desplega file in the current directory')
+  .command('run [name]')
+  .description('run the desplega file in the current directory or a named one')
   .allowUnknownOption()
-  .action(function(env, options) {
-    const descriptor = Loader.load(env)
-    const pipeline = Builder.build(descriptor)
-
-    pipeline.run()
-  })
+  .action(run)
 
 program.parse(process.argv)
