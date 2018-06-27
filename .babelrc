@@ -1,16 +1,4 @@
 {
   "presets": ["env"],
-  "plugins": ["transform-object-rest-spread", "transform-runtime"],
-  "env": {
-    "commonjs": {
-      "presets": [
-        [
-          "env",
-          {
-            "loose": true
-          }
-        ]
-      ]
-    }
-  }
+  "plugins": ["transform-object-rest-spread", "transform-runtime"]
 }
