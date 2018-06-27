@@ -8,9 +8,10 @@ const priorities = {
 }
 
 export default class Loader {
-  static load(posfix) {
-    const posfixWithDot = posfix ? `.${posfix}` : ''
-    const descriptor = Loader._LoadByPriority(posfixWithDot, '/') || Loader._LoadByPriority(posfixWithDot)
+  static load(cwd, posfix) {
+    const posfixInRoot = posfix ? `.${posfix}` : ''
+    const posfixInFolder = posfix ? `/${posfix}` : '/deploy'
+    const descriptor = Loader._LoadByPriority(cwd, posfixInRoot) || Loader._LoadByPriority(cwd, posfixInFolder)
 
     if (descriptor) return descriptor
 
@@ -25,14 +26,13 @@ export default class Loader {
     return yaml.safeLoad(fs.readFileSync(file, 'utf8'))
   }
 
-  static _LoadByPriority(posfix, divition = '') {
-    const cwd = process.cwd()
+  static _LoadByPriority(cwd, posfix) {
     const keys = Object.keys(priorities)
 
     for (let i = 0; i < keys.length; i++) {
       const priority = keys[i]
       const priorityLoadMethod = priorities[priority]
-      const fileName = `${cwd}/.desplega${divition}${posfix}.${priority}`
+      const fileName = `${cwd}/.desplega${posfix}.${priority}`
 
       if (fs.existsSync(fileName)) {
         return Loader[priorityLoadMethod](fileName)
