@@ -7,6 +7,41 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/9af99621b2c02c5fdfe7/maintainability)](https://codeclimate.com/github/omarandstuff/desplega/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/9af99621b2c02c5fdfe7/test_coverage)](https://codeclimate.com/github/omarandstuff/desplega/test_coverage)
 
-Desplega is a  general porpuse modularizable automatiation tool, you can automate virtualy any process than you would prefer not to do manually form your terminal.
+Desplega is a general purpose modularizable automatization tool, you can automate virtually any process that you would prefer not to do manually form your terminal.
 
-## Basics
+## Install
+```
+npm i -g desplega
+
+yarn global add desplega
+```
+
+
+## Basic usage
+After installing the global package just create a `.desplega.yml` file in the root of your project
+
+```yml
+#.desplega.yml
+pipeline:
+  title: Desplega
+  remotes:
+    Host1:
+      host: <my host ip or domain>
+      username": <host username>
+      password": <password> #Do not include if you authenticate via public key
+  stages:
+      -
+        title: Update system
+        steps:
+          -
+            remote: true
+            title: Update system
+            command: sudo apt-get update
+```
+Then just using our desplega cammand...
+```shell
+$ desplega
+```
+We will see something like this:
+
+<img src="https://raw.githubusercontent.com/omarandstuff/desplega/master/media/desplega-demo.gif" alt="Desplega" title="Desplega" width="400">

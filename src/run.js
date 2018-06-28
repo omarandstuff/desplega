@@ -4,7 +4,7 @@ import fs from 'fs'
 export default function run(name) {
   const cwd = process.cwd()
 
-  console.log(cwd)
+  console.log(name)
 
   const descriptor = Loader.load(cwd, name)
   const pipeline = Parser.buildPipeline(descriptor)
