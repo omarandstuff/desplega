@@ -1090,9 +1090,9 @@ delegates@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
 
-desplega-api@^2.0.7:
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/desplega-api/-/desplega-api-2.0.7.tgz#c9aed3db06e9f28ac40737c6f9f34ddd03501ab8"
+desplega-api@^2.0.9:
+  version "2.0.9"
+  resolved "https://registry.yarnpkg.com/desplega-api/-/desplega-api-2.0.9.tgz#51a90507030dd2670c9ad50488311de2d7147e43"
   dependencies:
     ansi-regex "^3.0.0"
     babel-runtime "^6.26.0"

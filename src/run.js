@@ -1,13 +1,22 @@
 import { Loader, Parser } from 'desplega-api'
-
-const cwd = process.cwd()
+import fs from 'fs'
 
 export default function run(name) {
+  const cwd = process.cwd()
+
+  console.log(cwd)
+
   const descriptor = Loader.load(cwd, name)
   const pipeline = Parser.buildPipeline(descriptor)
 
   pipeline
     .run()
-    .then(results => {})
-    .catch(results => {})
+    .then(logResults)
+    .catch(logResults)
+}
+
+function logResults(results) {
+  const cwd = process.cwd()
+
+  fs.appendFileSync(`${cwd}/desplega.log`, '////////\n')
 }

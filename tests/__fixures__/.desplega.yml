@@ -1,0 +1,9 @@
+pipeline:
+  title: Fixture
+  stages:
+      -
+        title: Stage
+        steps:
+          -
+            title: Step
+            command: ls
