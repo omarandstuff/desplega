@@ -44,4 +44,4 @@ $ desplega
 ```
 We will see something like this:
 
-<img src="https://raw.githubusercontent.com/omarandstuff/desplega/master/media/desplega-demo.gif" alt="Desplega" title="Desplega" width="400">
+<img src="https://raw.githubusercontent.com/omarandstuff/desplega/master/media/desplega-demo.gif" alt="Desplega" title="Desplega">

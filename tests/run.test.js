@@ -23,10 +23,13 @@ describe('run', () => {
 
     await new Promise(resolve =>
       setInterval(() => {
-        const logFileName = `${process.cwd()}/desplega.log`
-        if (fs.existsSync(logFileName)) {
-          fs.unlinkSync(logFileName)
-          resolve(logFileName)
+        const logDir = `${process.cwd()}/log`
+        const logFilePath = `${logDir}/desplega.log`
+
+        if (fs.existsSync(logFilePath)) {
+          fs.unlinkSync(logFilePath)
+          fs.rmdirSync(logDir)
+          resolve(logFilePath)
         }
       }, 100)
     )

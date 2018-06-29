@@ -4,8 +4,6 @@ import fs from 'fs'
 export default function run(name) {
   const cwd = process.cwd()
 
-  console.log(name)
-
   const descriptor = Loader.load(cwd, name)
   const pipeline = Parser.buildPipeline(descriptor)
 
@@ -17,6 +15,26 @@ export default function run(name) {
 
 function logResults(results) {
   const cwd = process.cwd()
+  const logDir = `${cwd}/log`
+  const logFilePath = `${logDir}/desplega.log`
 
-  fs.appendFileSync(`${cwd}/desplega.log`, '////////\n')
+  if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir)
+  }
+
+  fs.appendFileSync(logFilePath, `>>>>>${new Date()}\n`)
+  recursiveLog(logFilePath, results.context.archive.history)
+  fs.appendFileSync(logFilePath, `<<<<<${new Date()}\n`)
+}
+
+function recursiveLog(logFilePath, records) {
+  if (records.stdout || records.stderr) {
+    fs.appendFileSync(logFilePath, records.stdout || records.stderr)
+  } else {
+    Object.keys(records).forEach(recordKey => {
+      const record = records[recordKey]
+
+      recursiveLog(logFilePath, record)
+    })
+  }
 }

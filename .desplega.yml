@@ -1,0 +1,23 @@
+pipeline:
+  title: Deploy
+  remotes:
+    Remote1:
+      host: sapi.capptis.com
+      username": capptis
+  remoteOptions:
+    maxRetries: 2
+  localOptions:
+    maxRetries: 2
+  stages:
+      -
+        title: Cosas
+        steps:
+          -
+            title: Update system
+            remote: true
+            command: sudo apt-get update
+            verbosityLevel": partial
+          -
+            title: List files
+            command: ls -lh
+            verbosityLevel": full
