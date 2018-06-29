@@ -190,9 +190,9 @@ You can pass HEX formated color values to use insted of the UI default ones.
 
 ```yml
 theme:
+  backgroundColor: "#FFFFFF" #Background color to use for all the pipelne messages
   failureColor: "#FFFFFF" #Color for messages related to failures
   failureContrastColor: "#FFFFFF" #If set failure messages will be rendered with background
-  backgroundColor: "#FFFFFF" #Background color to use for all the pipelne messages
   mainColor: "#FFFFFF" #color to use for relevant info
   pipelineHeaderColor: "#FFFFFF" #Color for pipeline header
   pipelineHeaderContrastColor: "#FFFFFF" #If set pipeline header will be rendered with background
@@ -265,7 +265,7 @@ The same as the remoteOptions but just for this remote.
 Stages can override configurations from the pipeline so it only aplies to the child steps.
 
 ```yml
-title: Stage1
+  title: Stage1
   verbosityLevel: full
   remotes:
     - Remote1
@@ -387,7 +387,7 @@ module.exports = {
 
 ## Contributions
 
-PRs are will accepted.
+PRs are well accepted.
 
 ## Lisence
 
