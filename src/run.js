@@ -28,7 +28,7 @@ function logResults(results) {
 }
 
 function recursiveLog(logFilePath, records) {
-  if (records.stdout || records.stderr) {
+  if (records.stdout !== undefined || records.stderr !== undefined) {
     fs.appendFileSync(logFilePath, records.stdout || records.stderr)
   } else {
     Object.keys(records).forEach(recordKey => {
