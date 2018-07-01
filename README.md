@@ -48,7 +48,7 @@ $ desplega
 
 We will see something like this:
 
-<img src="https://raw.githubusercontent.com/omarandstuff/desplega/master/media/desplega-demo.gif" alt="Desplega" title="Desplega">
+![Demo](https://raw.githubusercontent.com/omarandstuff/desplega/master/media/demo.svg?sanitize=true)
 
 Yo can also create an equivalent json file
 
