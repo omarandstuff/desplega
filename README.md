@@ -121,6 +121,73 @@ module.exports = {
 
 Note: We didn't configured any remote this means we can run commands in or local machine too.
 
+And finally we cal also create pipelines asyncronously before running them by just exporting and async function in our desplega file.
+
+```js
+// .desplega.js
+
+module.exports async function generatePipeline() {
+  const pipelineName = await forSomeAsyncCalls...
+
+  return {
+    pipeline: {
+      title: pipelineName,
+      stages: [...]
+    }
+  }
+}
+```
+
+## Naming convetions
+You can name your desplega files with some subfix so you can run them independently. For example a desplega file to set up enviroment.
+
+```yml
+#.desplega.local.yml
+pipeline:
+  title: Desplega
+  stages:
+      -
+        title: Install dependencies
+        steps:
+          -
+            title: npm packages
+            command: npm install
+```
+
+you can run this pipeline by using the desplega command and including the desplega file subfix as a command.
+
+```shell
+$ desplega local
+```
+
+### Desplega folder hierarchy
+You can also specify a directory in where you can place more complex projects in a folder called `.desplega`. The following folder structure will behave exactly as if we were using a simple desplega file.
+
+```
+.desplega
+ |__ deploy.js
+```
+
+and we can running just by calling the desplega command.
+
+```shell
+$ desplega
+```
+
+Just as the naming convention example you can specify other pipeline files in the .desplega folder hierarchy.
+
+```
+.desplega
+ |__ local.js
+```
+
+will run with
+
+
+```shell
+$ desplega local
+```
+
 ## Pipeline configurations
 
 Pipelines can have more than one remote to send commands, you can even set different theme colors to show in the terminal pipeline UI.
