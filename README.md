@@ -121,7 +121,7 @@ module.exports = {
 
 Note: We didn't configured any remote this means we can run commands in or local machine too.
 
-And finally we cal also create pipelines asyncronously before running them by just exporting and async function in our desplega file.
+And finally we can also create pipelines asyncronously before running them by just exporting and async function in our desplega file, or by returning a promise.
 
 ```js
 // .desplega.js

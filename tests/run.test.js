@@ -21,17 +21,37 @@ describe('run', () => {
   it('finds and run a desplega file', async () => {
     run()
 
-    await new Promise(resolve =>
-      setInterval(() => {
+    await new Promise(resolve => {
+      const interval = setInterval(() => {
         const logDir = `${process.cwd()}/log`
         const logFilePath = `${logDir}/desplega.log`
 
         if (fs.existsSync(logFilePath)) {
+          clearInterval(interval)
           fs.unlinkSync(logFilePath)
           fs.rmdirSync(logDir)
           resolve(logFilePath)
         }
       }, 100)
-    )
+    })
+  })
+
+  it('finds and run an async desplega file', async () => {
+    process.cwd = () => `${realCwd()}/tests/__fixures__/async`
+    run()
+
+    await new Promise(resolve => {
+      const interval = setInterval(() => {
+        const logDir = `${process.cwd()}/log`
+        const logFilePath = `${logDir}/desplega.log`
+
+        if (fs.existsSync(logFilePath)) {
+          clearInterval(interval)
+          fs.unlinkSync(logFilePath)
+          fs.rmdirSync(logDir)
+          resolve(logFilePath)
+        }
+      }, 100)
+    })
   })
 })

@@ -5,8 +5,17 @@ export default function run(name) {
   const cwd = process.cwd()
 
   const descriptor = Loader.load(cwd, name)
-  const pipeline = Parser.buildPipeline(descriptor)
 
+  if (typeof descriptor === 'function') {
+    Parser.buildPipelineAsync(descriptor).then(pipeline => {
+      runPipeline(pipeline)
+    })
+  } else {
+    runPipeline(Parser.buildPipeline(descriptor))
+  }
+}
+
+function runPipeline(pipeline) {
   pipeline
     .run()
     .then(logResults)
