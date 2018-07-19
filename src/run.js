@@ -7,11 +7,19 @@ export default function run(name) {
   const descriptor = Loader.load(cwd, name)
 
   if (typeof descriptor === 'function') {
-    Parser.buildPipelineAsync(descriptor).then(pipeline => {
-      runPipeline(pipeline)
-    })
+    Parser.buildPipelineAsync(descriptor)
+      .then(pipeline => {
+        runPipeline(pipeline)
+      })
+      .catch(_ => {
+        console.log('There was an error parsing the pipeline, check your desplega file.')
+      })
   } else {
-    runPipeline(Parser.buildPipeline(descriptor))
+    try {
+      runPipeline(Parser.buildPipeline(descriptor))
+    } catch (_) {
+      console.log('There was an error parsing the pipeline, check your desplega file.')
+    }
   }
 }
 
