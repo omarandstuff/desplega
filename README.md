@@ -429,7 +429,7 @@ List of steps to run under this stage context.
 Steps can override configurations from the parent Stage so it only aplies to it.
 
 ```yml
-  remote: true
+  remote: true # virtual: true
   title: Step1
   path: path/where/to/run
   command: sudo apt-get update
@@ -451,6 +451,10 @@ Steps can override configurations from the parent Stage so it only aplies to it.
 
 Should this step run remotly.
 
+### virtual [false]
+
+Should this step run as a JS function.
+
 ### title
 
 Text to display to represent this step in the UI.
@@ -461,7 +465,7 @@ Where this command shoud be run in the file tree.
 
 ### command
 
-Command to execute, you can generate a dynamic command passing a function that resives the current step context.
+Command to execute, you can generate a dynamic command passing a function that resives the current step context. and if the command is set as virtual you need su suply and asyc function or return a Promise Object.
 
 ### verbosityLevel [partial]
 

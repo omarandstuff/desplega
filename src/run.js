@@ -45,13 +45,20 @@ function logResults(results) {
 }
 
 function recursiveLog(logFilePath, records) {
-  if (records.stdout !== undefined || records.stderr !== undefined) {
-    fs.appendFileSync(logFilePath, records.stdout || records.stderr)
-  } else {
-    Object.keys(records).forEach(recordKey => {
-      const record = records[recordKey]
+  if (records) {
+    if (
+      records.stdout !== undefined ||
+      records.stderr !== undefined ||
+      records.virtualout !== undefined ||
+      records.virtualerr !== undefined
+    ) {
+      fs.appendFileSync(logFilePath, records.stdout || records.stderr || records.virtualout || records.virtualerr)
+    } else {
+      Object.keys(records).forEach(recordKey => {
+        const record = records[recordKey]
 
-      recursiveLog(logFilePath, record)
-    })
+        recursiveLog(logFilePath, record)
+      })
+    }
   }
 }
