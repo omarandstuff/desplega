@@ -119,6 +119,58 @@ module.exports = {
 }
 ```
 
+You can also run common JS functions as steps by setting the steo as `virtual` and setting the command as an async function or returning a promise object.
+
+```js
+// .desplega.js
+function calculateHash(context, streamCallBack) {
+  return new Promise(resolve => {
+    let hash = 0
+
+    for(let i = 0; i < 1000; i++) {
+      streamCallBack(`Calculating hash... iteration: ${i}`) // Virtual steps pass a special function to give feedback to the piplile UI.
+      hash += Math.random() * 5
+    }
+
+    hash = Math.floor(hash)
+
+    resolve({ hash })
+  })
+}
+
+function createFileUsingHash(context) {
+  const dictionaryOfCommandResultsById = context.archive.dictionary
+  const commandUsingId = dictionaryOfCommandResultsById['hash_command']
+  const hash = commandUsingId.hash
+
+  return `touch ${hash}.txt`
+}
+
+module.exports = {
+  pipeline: {
+    title: 'Desplega',
+    stages: [
+      {
+        title: 'Delet oldest file',
+        steps: [
+          {
+            virtual: true,
+            id: 'hash_command', // Including id we can access its result in the archive dictionary
+            title: 'Calculate hash',
+            command: calculateHash
+          },
+          {
+            title: 'Create file',
+            path: '~/files',
+            command: createFileUsingHash // We create dynamic commands using funtions
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
 Note: We didn't configured any remote this means we can run commands in or local machine too.
 
 And finally we can also create pipelines asyncronously before running them by just exporting and async function in our desplega file, or by returning a promise.
