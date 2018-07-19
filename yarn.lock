@@ -1090,16 +1090,15 @@ delegates@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
 
-desplega-api@^2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/desplega-api/-/desplega-api-2.1.2.tgz#d8c602d98cdb2dd05dc90a56d9b970236646ee55"
+desplega-api@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/desplega-api/-/desplega-api-2.2.0.tgz#543bd42e1bfbaf96ef7d28cc564ddd5f9440886b"
   dependencies:
     ansi-regex "^3.0.0"
     babel-runtime "^6.26.0"
     chalk "^2.4.1"
     moment "^2.22.2"
     numeral "^2.0.6"
-    rsvp "^4.8.3"
     ssh2 "^0.6.1"
 
 detect-indent@^4.0.0:
@@ -3070,10 +3069,6 @@ rimraf@^2.5.4, rimraf@^2.6.1, rimraf@^2.6.2:
 rsvp@^3.3.3:
   version "3.6.2"
   resolved "https://registry.yarnpkg.com/rsvp/-/rsvp-3.6.2.tgz#2e96491599a96cde1b515d5674a8f7a91452926a"
-
-rsvp@^4.8.3:
-  version "4.8.3"
-  resolved "https://registry.yarnpkg.com/rsvp/-/rsvp-4.8.3.tgz#25d4b9fdd0f95e216eb5884d9b3767d3fbfbe2cd"
 
 safe-buffer@^5.0.1, safe-buffer@^5.1.1, safe-buffer@^5.1.2, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"
