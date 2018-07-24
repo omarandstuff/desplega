@@ -1,5 +1,6 @@
 import { Loader, Parser } from 'desplega-api'
 import fs from 'fs'
+import util from 'util'
 
 export default function run(name) {
   const cwd = process.cwd()
@@ -11,14 +12,16 @@ export default function run(name) {
       .then(pipeline => {
         runPipeline(pipeline)
       })
-      .catch(_ => {
+      .catch(error => {
         console.log('There was an error parsing the pipeline, check your desplega file.')
+        console.log(error)
       })
   } else {
     try {
       runPipeline(Parser.buildPipeline(descriptor))
-    } catch (_) {
+    } catch (error) {
       console.log('There was an error parsing the pipeline, check your desplega file.')
+      console.log(error)
     }
   }
 }
@@ -26,11 +29,11 @@ export default function run(name) {
 function runPipeline(pipeline) {
   pipeline
     .run()
-    .then(logResults)
-    .catch(logResults)
+    .then(logResults.bind(this, false))
+    .catch(logResults.bind(this, true))
 }
 
-function logResults(results) {
+function logResults(failed, results) {
   const cwd = process.cwd()
   const logDir = `${cwd}/log`
   const logFilePath = `${logDir}/desplega.log`
@@ -42,23 +45,44 @@ function logResults(results) {
   fs.appendFileSync(logFilePath, `>>>>>${new Date()}\n`)
   recursiveLog(logFilePath, results.context.archive.history)
   fs.appendFileSync(logFilePath, `<<<<<${new Date()}\n`)
+
+  if (failed && results.context.archive.history.length > 0) {
+    recursiveLog('', [results.context.archive.history[results.context.archive.history.length - 1]], false)
+  }
 }
 
-function recursiveLog(logFilePath, records) {
-  if (records) {
-    if (
-      records.stdout !== undefined ||
-      records.stderr !== undefined ||
-      records.virtualout !== undefined ||
-      records.virtualerr !== undefined
-    ) {
-      fs.appendFileSync(logFilePath, records.stdout || records.stderr || records.virtualout || records.virtualerr)
+function recursiveLog(logFilePath, records, onFile = true) {
+  records.forEach(record => {
+    if (record instanceof Array) {
+      recursiveLog(logFilePath, record)
     } else {
-      Object.keys(records).forEach(recordKey => {
-        const record = records[recordKey]
-
-        recursiveLog(logFilePath, record)
-      })
+      if (record) {
+        if (
+          record.stdout !== undefined ||
+          record.stderr !== undefined ||
+          record.virtualout !== undefined ||
+          record.virtualerr !== undefined
+        ) {
+          const line = getLine(logFilePath, record.stdout || record.stderr || record.virtualout || record.virtualerr)
+          if (onFile) {
+            fs.appendFileSync(logFilePath, line)
+          } else {
+            console.log(line)
+          }
+        } else {
+          const line = getLine(logFilePath, record)
+          if (onFile) {
+            fs.appendFileSync(logFilePath, line)
+          } else {
+            console.log(line)
+          }
+        }
+      }
     }
-  }
+  })
+}
+
+function getLine(path, line) {
+  const processedLine = line instanceof Object ? util.inspect(line) : line || ''
+  return processedLine[processedLine.length - 1] === '\n' ? processedLine : `${processedLine}\n`
 }
