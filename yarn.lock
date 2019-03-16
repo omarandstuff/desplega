@@ -1120,10 +1120,10 @@ delegates@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
 
-desplega-api@^2.4.1:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/desplega-api/-/desplega-api-2.4.1.tgz#4d967b181a71c2d4e922adb23c2b0feaadc66fa7"
-  integrity sha512-Ly+0R8p+KTFHP/BkhbES5EKu7WtQAEck+NQ9j+ZyqC8LcNdbdmySXU2+hD3gp0m6JK109YIUzearmtxZFQ97tw==
+desplega-api@^2.4.2:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/desplega-api/-/desplega-api-2.4.2.tgz#f80e1e2b766bbd9e021036d5ea08e1c28b2f09f1"
+  integrity sha512-2NPnJd9a4JwIpd17+c4RBCXJBu+wy3lUxgiXnHxzJ2yKst7JygNEFqc0mcgh9X15GzqLP+A3QoB40TdkvcO9IA==
   dependencies:
     ansi-regex "^4.0.1"
     babel-runtime "^6.26.0"
