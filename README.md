@@ -103,12 +103,12 @@ module.exports = {
         steps: [
           {
             id: 'list_command', // Including id we can access its result in the archive dictionary
-            title: 'Update system',
+            title: 'List files',
             path: '~/files',
             command: 'ls -t'
           },
           {
-            title: 'Update system',
+            title: 'Delete oldest one',
             path: '~/files',
             command: deleteOldestFile // We create dynamic commands using funtions
           }
@@ -510,7 +510,7 @@ module.exports = {
 
 ## Contributions
 
-PRs are well accepted.
+PRs are welcome
 
 ## Lisence
 
