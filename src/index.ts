@@ -3,7 +3,7 @@ import program from 'commander'
 import run from './run'
 
 program
-  .version('2.0.8')
+  .version('3.0.0')
   .description('Desplega command line tool')
   .allowUnknownOption()
 
@@ -15,6 +15,4 @@ program
 
 program.parse(process.argv)
 
-if (program.args.length < 1) {
-  run()
-}
+if (program.args.length < 1) run()

@@ -1,5 +1,6 @@
 import fs from 'fs'
 import yaml from 'js-yaml'
+import { PipelineParserDescriptor } from 'desplega-api'
 
 const priorities = {
   js: 'loadJsFile',
@@ -8,7 +9,7 @@ const priorities = {
 }
 
 export default class Loader {
-  public load(cwd: string, posfix?: string): {} {
+  public load(cwd: string, posfix?: string): PipelineParserDescriptor {
     const posfixInRoot: string = posfix ? `.${posfix}` : ''
     const posfixInFolder: string = posfix ? `/${posfix}` : '/deploy'
     const descriptor: any = this.loadByPriority(cwd, posfixInRoot) || this.loadByPriority(cwd, posfixInFolder)

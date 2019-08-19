@@ -320,6 +320,13 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/commander@^2.12.2":
+  version "2.12.2"
+  resolved "https://registry.yarnpkg.com/@types/commander/-/commander-2.12.2.tgz#183041a23842d4281478fa5d23c5ca78e6fd08ae"
+  integrity sha512-0QEFiR8ljcHp9bAbWxecjVRuAMr16ivPiGOw6KFQBVrVd0RQIcM3xKdRisH2EDWgVWujiYtHwhSkSUoAAGzH7Q==
+  dependencies:
+    commander "*"
+
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"
@@ -856,7 +863,7 @@ combined-stream@1.0.6, combined-stream@~1.0.5:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@^3.0.0:
+commander@*, commander@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-3.0.0.tgz#0641ea00838c7a964627f04cddc336a2deddd60a"
   integrity sha512-pl3QrGOBa9RZaslQiqnnKX2J068wcQw7j9AIaBQ9/JEp5RY6je4jKTImg0Bd+rpoONSe7GUFSgkxLeo17m3Pow==
@@ -1003,16 +1010,15 @@ delegates@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
 
-desplega-api@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/desplega-api/-/desplega-api-3.0.1.tgz#ca9d5b8e59484816234ced9846d241cf999b0122"
-  integrity sha512-vpXuWaeSt8nrxbuMCFgzYt5I/9RZlZg/TyOYStJI4QGAvelokcKdKJ2iacXHp9kr3hnS34dsTiEU2L+UJx8AUA==
+desplega-api@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/desplega-api/-/desplega-api-3.0.4.tgz#6d05fbe9fdc3195a35ee115cd8c5c1b86c442ef8"
+  integrity sha512-vE+kK6S9mnVJKlwYSZJKb9vOcCJ0AdRbTnE1hCz3YYR/3+x0ZGbjXBwbRoAJgpWdHxzapGSOTVsh0puajRE2iQ==
   dependencies:
     "@types/node" "^12.7.1"
     "@types/ssh2" "^0.5.38"
     ansi-regex "^4.1.0"
     chalk "^2.4.2"
-    js-yaml "^3.13.1"
     moment "^2.24.0"
     numeral "^2.0.6"
     ssh2 "^0.8.5"

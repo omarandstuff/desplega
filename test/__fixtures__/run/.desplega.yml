@@ -1,0 +1,6 @@
+pipeline:
+  title: Fixture
+  steps:
+    - type: local
+      title: step
+      command: 'touch desplega.txt'
