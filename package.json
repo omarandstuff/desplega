@@ -7,42 +7,46 @@
   "repository": "github:omarandstuff/desplega",
   "bugs": "https://github.com/omarandstuff/desplega/issues",
   "author": "David De Anda <omarandstuff@gmail.com> (https://github.com/omarandstuff)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rimraf dist coverage",
-    "build": "babel src --out-dir dist",
+    "build": "tsc",
+    "lint": "eslint src test --ext .ts",
     "test": "jest --watch",
-    "test:coverage": "jest --coverage --no-cache",
-    "playground": "babel-node playground",
-    "format": "prettier --write \"{src,tests}/**/*.js\"",
-    "format:check": "prettier --list-different \"{src,tests}/**/*.js\"",
-    "prepare": "yarn clean && yarn format:check && yarn test:coverage && yarn build"
+    "test:all": "jest",
+    "test:coverage": "jest --coverage",
+    "playground": "ts-node playground",
+    "format": "prettier --write \"{src,test}/**/*.ts\"",
+    "format:check": "prettier --list-different \"{src,test}/**/*.ts\"",
+    "prepare": "yarn clean && yarn format:check && yarn lint && yarn test:coverage && yarn build"
   },
   "dependencies": {
-    "commander": "^2.19.0",
-    "desplega-api": "^2.4.2",
-    "js-yaml": "^3.12.2"
+    "commander": "^3.0.0",
+    "desplega-api": "^3.0.1",
+    "js-yaml": "^3.13.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "jest": "^23.6.0",
-    "prettier": "^1.16.4",
-    "rimraf": "^2.6.3"
+    "@types/jest": "^24.0.17",
+    "@types/js-yaml": "^3.12.1",
+    "@typescript-eslint/eslint-plugin": "^2.0.0",
+    "@typescript-eslint/parser": "^2.0.0",
+    "eslint": "^6.1.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "jest": "^24.9.0",
+    "prettier": "^1.18.2",
+    "rimraf": "^3.0.0",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.5.3"
   },
   "files": [
     "dist",
     "src"
   ],
-  "main": "dist/index.js",
   "preferGlobal": true,
   "bin": {
     "desplega": "dist/index.js"
-  },
-  "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.js"
-    ]
   },
   "keywords": [
     "simple",
