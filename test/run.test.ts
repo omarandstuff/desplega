@@ -18,14 +18,14 @@ afterAll(() => {
 
 describe('run', () => {
   it('finds and run a desplega file', async () => {
-    process.cwd = () => `${realCwd()}/test/__fixtures__/run`
+    process.cwd = (): string => `${realCwd()}/test/__fixtures__/run`
     await run()
 
     expect(console.log).toHaveBeenCalled()
   })
 
   it('finds and run an async desplega file', async () => {
-    process.cwd = () => `${realCwd()}/test/__fixtures__/run/async`
+    process.cwd = (): string => `${realCwd()}/test/__fixtures__/run/async`
     await run()
 
     expect(console.log).toHaveBeenCalled()
