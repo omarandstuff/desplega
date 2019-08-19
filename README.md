@@ -61,7 +61,7 @@ Yo can also create an equivalent json file
       },
       "steps": [
         {
-          "type": 'remote,
+          "type": 'remote',
           "title": "Update system",
           "command": "sudo apt-get update"
         }
